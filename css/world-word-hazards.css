@@ -1,0 +1,62 @@
+.peligro-palabras { position:absolute; z-index:5; pointer-events:none; transition:opacity .65s; }
+.peligro-palabras[hidden] { display:none; }
+.peligro-palabras svg { display:block; width:100%; height:100%; overflow:visible; }
+.peligro-etapa { opacity:0; transition:opacity .5s ease; }
+.peligro-etapa.activa { opacity:1; }
+.peligro-palabras.liberando { opacity:0; }
+.viento-sombra { fill:#b0def013; stroke:#7cc8e359; stroke-width:5; }
+.viento-cinta { fill:none; stroke:#e2faff80; stroke-width:2; stroke-linecap:round; stroke-dasharray:100 12 32 8; animation:vientoAtrapa 2.5s linear infinite; filter:drop-shadow(0 0 2px #78d7ff); }
+.viento-polvo { fill:#e8cb8b; animation:polvoEnOrbita var(--duracion) linear var(--demora) infinite; }
+.viento-polvo:nth-child(3n) { fill:#a6814c; }
+.viento-fragmento { fill:#c4ad7e; stroke:#f7e1af; stroke-width:.35; }
+@keyframes polvoEnOrbita { 0%,100% { transform:translate(0,0); opacity:.75; } 25% { transform:translate(var(--orbita-x),-5px); opacity:.35; } 50% { transform:translate(calc(var(--orbita-x)*2),calc(var(--orbita-y)*2)); opacity:.65; } 75% { transform:translate(var(--orbita-x),5px); opacity:1; } }
+.viento-destello { fill:none; stroke:#81badb; stroke-width:2; }
+.viento-particula { fill:none; stroke:#fff6c3; stroke-width:2; stroke-linecap:round; }
+.torbellino-final { opacity:0; transition:opacity .65s ease; }
+.peligro-palabras[data-world="2"][data-stage="6"] .torbellino-final { opacity:1; }
+.torbellino-nucleo { fill:url(#torbellino-niebla); }
+.torbellino-rafaga { fill:none; stroke:#eef8eb; stroke-width:9; stroke-linecap:round; stroke-dasharray:100 18 54 12; opacity:.8; animation:torbellinoCerrado .75s linear var(--demora) infinite; }
+.torbellino-rafaga:nth-child(even) { stroke:#8fb8c7; stroke-width:12; animation-direction:reverse; }
+.torbellino-escombro { fill:#c9b57d; animation:fragmentosTorbellino 1.1s ease-in-out var(--demora) infinite alternate; }
+.torbellino-escombro:nth-child(3n) { fill:#f8ebc4; }
+#personajeImagen.aren-viento-anclado { animation:none; translate:none; }
+#personajeImagen.aren-hielo-anclado { animation:none; translate:none; }
+#personajeImagen.aren-en-remolino-final { opacity:.2; transition:opacity .65s ease; }
+.peligro-palabras:not([data-stage="6"]) .torbellino-final * { animation-play-state:paused; }
+@keyframes torbellinoCerrado { to { stroke-dashoffset:-184; } }
+@keyframes fragmentosTorbellino { from { transform:translate(-8px,5px); opacity:.5; } to { transform:translate(var(--deriva),-9px); opacity:1; } }
+.hielo-bloque { fill:url(#hielo-progresivo); stroke:#d4faff; stroke-width:2; stroke-linejoin:round; }
+.hielo-grieta { fill:none; stroke:#f0ffffba; stroke-width:1.6; }
+.hielo-final { opacity:0; transition:opacity .65s ease; }
+.peligro-palabras[data-world="3"][data-stage="6"] .hielo-final { opacity:1; }
+.hielo-prision { fill:url(#hielo-solido); stroke:#e0fbff; stroke-width:2.5; stroke-linejoin:round; }
+.hielo-faceta-oscura { fill:#215c9b; fill-opacity:.5; }
+.hielo-faceta-clara { fill:#e8ffff; fill-opacity:.48; }
+.hielo-escarcha { fill:none; stroke:#f2ffff; stroke-width:1.3; stroke-linecap:round; stroke-linejoin:round; opacity:.82; }
+.hielo-reflejo { fill:none; stroke:white; stroke-width:3.5; stroke-linecap:round; opacity:.88; }
+#personajeImagen.aren-congelado-final { opacity:0; transition:opacity .65s ease; }
+@media(prefers-reduced-motion:reduce) { .hielo-final,#personajeImagen.aren-congelado-final { transition:none; } }
+.jaula-resplandor { fill:#ff681a28; stroke:#ff7b2155; stroke-width:6; filter:blur(3px); }
+.jaula-aro { fill:none; stroke:#ffac32; stroke-width:3; filter:drop-shadow(0 0 3px #ff4c0a); }
+.jaula-fuego-exterior { fill:url(#jaula-fuego-gradiente); fill-opacity:.84; filter:drop-shadow(0 0 2px #ff530e); }
+.jaula-fuego-nucleo { fill:#fff0a8; fill-opacity:.9; }
+.jaula-llama { transform-box:fill-box; transform-origin:center bottom; animation:llamaJaula 1.35s ease-in-out var(--demora) infinite alternate; }
+.jaula-boveda { fill:none; stroke:#ffc348; stroke-width:5; stroke-linecap:round; filter:drop-shadow(0 0 3px #ff4c0a); }
+.jaula-brasa { fill:#ffd987; animation:brasaJaula 2.6s linear var(--demora) infinite; }
+.peligro-etapa:not(.activa) .jaula-llama, .peligro-etapa:not(.activa) .jaula-brasa { animation-play-state:paused; }
+.peligro-palabras[data-world="4"][data-stage="6"] { filter:drop-shadow(0 0 5px #ff650b77); }
+@keyframes llamaJaula { from { transform:scaleX(.91) scaleY(.97) skewX(-2deg); } to { transform:scaleX(1.06) scaleY(1.03) skewX(2deg); } }
+@keyframes brasaJaula { 0% { transform:translate(0,0); opacity:0; } 20% { opacity:.95; } 100% { transform:translate(var(--deriva),-95px); opacity:0; } }
+.peligro-palabras[data-stage="6"] { filter:drop-shadow(0 0 4px #bcdcff66); }
+#pantallaJuego:not(.activa) .peligro-palabras * { animation-play-state:paused; }
+@keyframes vientoAtrapa { to { stroke-dashoffset:-152; } }
+@media(prefers-reduced-motion:reduce) { .peligro-palabras, .peligro-etapa { transition:none; } .viento-cinta, .viento-polvo, .jaula-llama, .jaula-brasa { animation:none; } }
+@media(prefers-reduced-motion:reduce) { .torbellino-final { transition:none; } .torbellino-rafaga,.torbellino-escombro { animation:none; } #personajeImagen.aren-en-remolino-final { translate:none; transition:none; } }
+
+/* Cumbres: changing pose keeps the same visible feet, height and center. */
+.escenario.viento-poses-fijas .personaje-imagen { height:clamp(113px,14.67vw,173px); }
+.escenario.viento-poses-fijas .personaje-imagen:not(.caminando):not(.oculto-cinematica) {
+  animation:none;
+  transform:translate(var(--viento-pose-x,0px),var(--viento-pose-y,0px)) scale(var(--viento-pose-escala,1));
+}
+@media(max-width:700px) { .escenario.viento-poses-fijas .personaje-imagen { height:87px; } }

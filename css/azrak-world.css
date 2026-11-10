@@ -1,0 +1,325 @@
+.escenario-azrak { isolation: isolate; }
+.probar-victoria-aventura { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); z-index: 150; border: 1px solid #be9870; border-radius: 12px; padding: 6px 12px; color: white; background: #23152de8; font-size: .75rem; }
+.cristal-panel-union { filter: hue-rotate(190deg) saturate(.7) brightness(1.35); }
+.modal-historia.historia-azrak { background: radial-gradient(ellipse at center, #42204488, transparent 70%), #08060bf2; }
+.historia-azrak .presentacion-historia { width: min(96vw, 920px); min-height: 0; height: min(70vw, 610px, 88vh); }
+.historia-azrak .soporte-mision { inset: 0; width: 100%; height: 100%; transform: none; filter: drop-shadow(0 12px 24px #000a); }
+.historia-azrak .soporte-mision > img { width: 100%; height: 100%; }
+.historia-azrak .pergamino-mision { box-sizing: border-box; width: 76%; min-height: 0; height: 60%; padding: 8px; border: 0; background: none; box-shadow: none; clip-path: none; color: #fff0d5; }
+.historia-azrak .pergamino-mision::before,
+.historia-azrak .pergamino-mision::after,
+.historia-azrak .rollo-pergamino,
+.historia-azrak .clavo-pergamino { display: none; }
+.historia-azrak .contenido-pergamino { box-sizing: border-box; max-height: 100%; padding: 3px; scrollbar-color: #bd8654 transparent; }
+.historia-azrak .numero-capitulo { color: #edb67c; text-shadow: 0 2px 4px #000; }
+.historia-azrak .pergamino-mision h2 { color: #ffe6ba; text-shadow: 0 2px 5px #000; }
+.historia-azrak .separador-pergamino { color: #d09aea; }
+.historia-azrak #textoCapitulo { color: #fff0df; text-shadow: 0 2px 3px #000; }
+.modal-historia.historia-azrak.abriendo .soporte-mision,
+.modal-historia.historia-azrak.abriendo .pergamino-mision,
+.modal-historia.historia-azrak.abriendo .contenido-pergamino { animation: revelarCartelAzrak 650ms ease both; }
+.modal-historia.historia-azrak.cerrando .soporte-mision,
+.modal-historia.historia-azrak.cerrando .pergamino-mision { animation: revelarCartelAzrak 450ms ease reverse both; }
+@keyframes revelarCartelAzrak { from { opacity: 0; } to { opacity: 1; } }
+@media (max-width: 600px) and (orientation: portrait) {
+  .historia-azrak .presentacion-historia { height: min(640px, 80vh); }
+  .historia-azrak .pergamino-mision { width: 78%; height: 61%; padding: 5px; }
+  .historia-azrak .pergamino-mision h2 { font-size: clamp(1.4rem, 6vw, 1.9rem); }
+}
+@media (max-height: 560px) and (orientation: landscape) {
+  .historia-azrak .presentacion-historia { width: min(92vw, 850px); height: 94vh; }
+  .historia-azrak .numero-capitulo { font-size: .9rem; margin-bottom: 6px; }
+  .historia-azrak .pergamino-mision h2 { font-size: 1.5rem; margin-bottom: 6px; }
+  .historia-azrak #textoCapitulo { font-size: .98rem; line-height: 1.35; }
+  .historia-azrak .separador-pergamino { margin-bottom: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal-historia.historia-azrak.abriendo .soporte-mision,
+  .modal-historia.historia-azrak.abriendo .pergamino-mision,
+  .modal-historia.historia-azrak.abriendo .contenido-pergamino { animation: none; }
+}
+.escenario-azrak::after { content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 1; background: radial-gradient(ellipse at 50% 100%, #f57c0022, transparent 65%); }
+.prueba-azrak .panel-prueba-bosque { background: linear-gradient(140deg, #251633, #100d17); border-color: #c7874a; }
+.puzzle-azrak { width: min(100%, 720px); margin: auto; padding: 12px; color: #fff2d4; text-align: center; }
+.azrak-puzzle-board { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 12px auto; max-width: 480px; }
+.puzzle-azrak button { min-height: 48px; padding: 12px; border: 2px solid #9670b1; border-radius: 12px; background: #261935; color: #fff4d6; font: inherit; cursor: pointer; }
+.azrak-puzzle-board button { font-size: clamp(1rem, 4vw, 1.9rem); }
+.puzzle-azrak button:focus-visible { outline: 3px solid #ffe09c; outline-offset: 3px; }
+.puzzle-azrak .runa-encendida { background: #b87924; color: white; box-shadow: 0 0 22px #ffc269; border-color: #fff1af; }
+.puzzle-azrak button:disabled { cursor: default; opacity: .8; }
+.puzzle-azrak button.runa-encendida:disabled { opacity: 1; }
+.azrak-puzzle-clues { border-left: 3px solid #efb96e; padding: 12px; background: #ffffff0a; text-align: left; line-height: 1.6; }
+.azrak-puzzle-status { min-height: 2.7em; line-height: 1.4; }
+.azrak-puzzle-board.tablero-juramentos { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 650px; gap: 10px; }
+.tablero-juramentos .sello-juramento { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; padding: 8px; font-size: 1rem; border-color: #977449; background: #1d1328; }
+.sello-juramento strong { color: #ffe0a0; font-size: 1rem; }
+.juramento-medallon { display: block; position: relative; width: 100%; aspect-ratio: 1; overflow: hidden; border-radius: 12px; pointer-events: none; }
+.juramento-medallon img { position: absolute; width: 200%; height: 200%; max-width: none; object-fit: fill; user-select: none; }
+.juramento-simbolo { font-size: .8rem; line-height: 1.3; }
+@media (hover: hover) { .tablero-juramentos .sello-juramento:hover { border-color: #ffe0a0; background: #35233f; } }
+@media (max-width: 600px) and (orientation: portrait) {
+  .azrak-puzzle-board.tablero-juramentos { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 330px; }
+  .sello-juramento .juramento-medallon { width: min(100%, 105px); }
+}
+@media (max-height: 600px) and (orientation: landscape) {
+  .azrak-puzzle-board.tablero-juramentos { margin: 6px auto; max-width: 480px; }
+  .tablero-juramentos .sello-juramento { padding: 4px; gap: 2px; }
+  .sello-juramento .juramento-medallon { width: min(100%, 72px); }
+  .puzzle-azrak:has(.tablero-juramentos) .azrak-puzzle-clues { margin: 4px 0; padding: 6px 10px; line-height: 1.3; }
+  .puzzle-azrak:has(.tablero-juramentos) .azrak-puzzle-status { margin: 6px 0; min-height: 0; }
+}
+.runas-visor { width:100%; aspect-ratio:3/2; max-height:48vh; overflow:auto; overscroll-behavior:contain; touch-action:none; border:2px solid #92704f; border-radius:12px; background:#140d20; cursor:grab; }
+.runas-visor:active { cursor:grabbing; }
+.runas-visor:focus-visible { outline:3px solid #ffe09c; }
+.runas-escena { position:relative; width:100%; user-select:none; }
+.runas-escena > img { display:block; width:100%; max-width:none; height:auto; pointer-events:none; }
+.puzzle-azrak .runa-oculta { position:absolute; transform:translate(-50%,-50%); min-width:32px; min-height:32px; padding:0; border:2px solid transparent; border-radius:50%; background:transparent; box-shadow:none; color:transparent; -webkit-tap-highlight-color:transparent; touch-action:none; }
+.puzzle-azrak .runa-oculta:hover,.puzzle-azrak .runa-oculta:active { transform:translate(-50%,-50%); background:transparent; }
+.puzzle-azrak .runa-oculta.encontrada { border-color:#a9ffdf; color:white; background:#123d3480; box-shadow:0 0 16px #b0ffe5; font-size:1.3rem; }
+.runas-objetivos { display:flex; justify-content:center; gap:10px; list-style:none; padding:0; margin:12px 0; }
+.runas-objetivos li { flex:1; max-width:105px; font-size:.75rem; color:#e9d8bc; }
+.runas-objetivos svg { display:block; width:46px; height:46px; margin:0 auto 4px; border-radius:50%; border:2px solid #715b4f; }
+.runas-objetivos .encontrada { color:#a9ffdf; }
+.runas-objetivos .encontrada svg { border-color:#a9ffdf; }
+.runas-controles { display:flex; flex-wrap:wrap; justify-content:center; gap:7px; }
+.prueba-azrak:has(.runas-visor) .estado-prueba-bosque { display:none; }
+@media(orientation:landscape) and (max-height:600px) {
+  .puzzle-azrak:has(.runas-visor) { display:grid; grid-template-columns:minmax(0,1fr) 220px; gap:6px 12px; width:100%; }
+  .puzzle-azrak:has(.runas-visor) .azrak-puzzle-status { grid-column:1/-1; min-height:0; }
+  .runas-visor { grid-column:1; grid-row:2/4; width:min(100%,calc((100dvh - 170px)*1.5)); max-height:none; justify-self:center; align-self:center; }
+  .runas-objetivos { grid-column:2; grid-row:2; flex-wrap:wrap; margin:0; gap:4px; }
+  .runas-objetivos li { flex:0 0 30%; font-size:.65rem; }
+  .runas-objetivos svg { width:30px; height:30px; }
+  .runas-controles { grid-column:2; grid-row:3; align-self:start; gap:4px; }
+  .puzzle-azrak .runas-controles button { min-height:32px; font-size:.7rem; padding:4px; }
+}
+.puzzle-azrak .runas-controles button { padding:8px; font-size:.8rem; }
+@media(max-width:600px) { .puzzle-azrak:has(.runas-visor) { padding:4px; box-sizing:border-box; } .runas-objetivos { gap:4px; } }
+.azrak-puzzle-board.tablero-eclipse { grid-template-columns: repeat(3, 1fr); max-width: 330px; }
+.cinematica-azrak { position: fixed; inset: 0; z-index: 20000; background: #09060e; color: #fff1d9; display: grid; grid-template-rows: minmax(0, 1fr) auto; font-family: system-ui, sans-serif; overflow: hidden; }
+.azrak-music-notice { position: absolute; z-index: 30; inset: 0 0 65px; display: flex; flex-wrap: wrap; align-content: center; justify-content: center; gap: 12px; padding: 20px; background: #09060eed; text-align: center; }
+.azrak-music-notice[hidden] { display: none; }
+.azrak-music-notice p { flex: 0 0 100%; }
+.azrak-music-notice button { min-height: 44px; padding: 10px 16px; border: 1px solid #cba060; border-radius: 10px; background: #302039; color: #fff1d9; font: inherit; cursor: pointer; }
+.azrak-music-notice button:focus-visible { outline: 3px solid #ffe09c; outline-offset: 3px; }
+.azrak-cinema-stage { position: relative; overflow: hidden; background: #261629 url('../assets/images/fondos/reino-azrak/trono-v1.png') center/cover; isolation: isolate; }
+.azrak-cinema-stage::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(#0005, transparent 35%, transparent 75%, #09060e); z-index: 6; }
+.azrak-cinema-actor { position: absolute; left: var(--x); top: var(--y); height: var(--size); width: auto; max-width: 48%; object-fit: contain; transform: translate(-50%, -100%); transform-origin: center bottom; filter: drop-shadow(0 12px 10px #0008); z-index: 2; animation: azrakLlegada .65s both; }
+.actor-azrak { z-index: 1; }
+.azrak-cinema-stage.escena-ilustrada { background: #09060e; }
+.azrak-cinema-stage.escena-ilustrada::after { display: none; }
+.azrak-cinema-illustration { display: block; width: 100%; height: 100%; object-fit: contain; }
+.azrak-cinema-illustration { transform-origin:var(--plano-foco, 50% 50%); animation:planoFinalAzrak var(--plano-duracion, 8s) linear both; }
+@keyframes planoFinalAzrak { from { opacity:.2; transform:scale(1); } 5% { opacity:1; } to { opacity:1; transform:scale(var(--plano-zoom, 1.055)); } }
+.azrak-cinema-stage.entrega-guardian { background:radial-gradient(ellipse at center, color-mix(in srgb, var(--energia-guardian) 28%, transparent), #120c24 72%), url('../assets/images/fondos/reino-azrak/trono-v1.png') center/cover; }
+.retrato-entrega { position:absolute; width:85%; height:83%; object-fit:contain; left:7.5%; top:4%; z-index:2; filter:drop-shadow(0 0 18px var(--energia-guardian)); animation:entregaRetrato .6s ease-out both; }
+/* Compensa el margen transparente del retrato vertical de la Guardiana. */
+.cinematica-azrak[data-shot="energia-guardiana"] .retrato-entrega { scale:1.45; }
+.energia-entrega { position:absolute; inset:15% 8% 0; opacity:.7; background:repeating-conic-gradient(from 0deg at 50% 65%, transparent 0 17deg, var(--energia-guardian) 19deg 20deg, transparent 22deg 40deg); mask-image:radial-gradient(ellipse, #000 5%, transparent 70%); animation:energiaLatido 2.5s ease-in-out infinite; }
+.nombre-entrega { position:absolute; bottom:5%; left:0; width:100%; z-index:7; text-align:center; color:#fff2cf; font-size:clamp(1.1rem, 3vw, 2rem); text-shadow:0 2px 8px #000; }
+@keyframes entregaRetrato { from { transform:translateY(12px); } to { transform:none; } }
+@keyframes energiaLatido { 50% { opacity:1; transform:scale(1.08); } }
+.cinematica-azrak.movimiento-reducido .azrak-cinema-illustration,
+.cinematica-azrak.movimiento-reducido .retrato-entrega,
+.cinematica-azrak.movimiento-reducido .energia-entrega { animation:none !important; opacity:1; transform:none; }
+.azrak-music-toggle[hidden] { display:none; }
+.cinematica-azrak button[hidden], .azrak-rotate-guide[hidden] { display:none; }
+.azrak-rotate-guide { position:absolute; inset:0; z-index:20; display:grid; place-items:center; padding:24px; background:#09060ef5; text-align:center; }
+.azrak-rotate-guide > div { max-width:360px; }
+.azrak-rotate-guide span { display:block; font-size:4rem; color:#edbb75; }
+.azrak-rotate-guide h2 { font-size:1.6rem; margin:12px 0; }
+.azrak-rotate-guide p { line-height:1.5; }
+.azrak-rotate-guide button { display:block; width:100%; min-height:46px; margin-top:14px; border:1px solid #bca377; border-radius:14px; padding:10px 16px; color:#fff1d9; background:#392641; font:inherit; cursor:pointer; }
+.azrak-rotate-guide [data-view="portrait"] { background:transparent; }
+.cinematica-azrak.esperando-giro nav { visibility:hidden; }
+.cinematica-azrak:fullscreen { width:100%; height:100%; }
+.azrak-cinema-caption { padding: 14px clamp(18px, 5vw, 90px) 20px; text-align: center; background: #09060e; }
+.azrak-cinema-caption span { font-size: .68rem; letter-spacing: .19em; color: #edbb75; }
+.azrak-cinema-caption p { font-size: clamp(.9rem, 1.7vw, 1.3rem); line-height: 1.5; max-width: 1000px; margin: 9px auto 0; }
+.cinematica-azrak nav { position: absolute; top: max(10px, env(safe-area-inset-top)); right: max(10px, env(safe-area-inset-right)); display: flex; gap: 8px; z-index: 10; }
+.cinematica-azrak nav button { min-height: 38px; border: 1px solid #bca377; border-radius: 20px; background: #0b071be6; color: #fff1d9; padding: 7px 15px; font: inherit; cursor: pointer; }
+.azrak-cinema-effect { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+.arrodillado { animation: azrakArrodillado 1.8s both; }
+.desvanecer { animation: azrakDesvanecer 4.5s both; }
+.aparecer { animation: azrakRegreso 2.7s both; }
+.sacudida { animation: azrakSacudida .45s 5 1.8s; }
+.derrota { animation: azrakDerrota 7s both; }
+.efecto-traicion .azrak-cinema-effect::before,
+.efecto-rescate .azrak-cinema-effect::before { content: ""; position: absolute; left: 68%; top: 38%; width: 12%; aspect-ratio: 1; background: url('../assets/images/personajes/versus/calavera-ignea-azrak.png') center/contain no-repeat; animation: azrakProyectil 3s both; }
+.efecto-traicion .azrak-cinema-effect::after,
+.efecto-bruma .azrak-cinema-effect::after { content: ""; position: absolute; left: 27%; top: 38%; width: 40%; height: 44%; border-radius: 50%; background: radial-gradient(ellipse, #b166e988, #38135666 50%, transparent 70%); animation: azrakBruma 4s both; }
+.efecto-hielo .azrak-cinema-effect::before { content: ""; position: absolute; left: 70%; top: 48%; width: 18%; height: 29%; background: linear-gradient(110deg, #e3ffffe6, #57bdf7dd, #c5faff); clip-path: polygon(0 100%, 4% 40%, 22% 60%, 28% 2%, 45% 48%, 65% 15%, 70% 55%, 94% 30%, 100% 100%); animation: azrakHielo 2.7s both; filter: drop-shadow(0 0 18px #a0efff); }
+.efecto-hielo .azrak-cinema-effect::after { content: ""; position: absolute; left: 32%; top: 48%; width: 44%; height: 5%; background: linear-gradient(90deg, transparent, #d6ffff, #62d3ff); border-radius: 50%; transform: rotate(12deg); animation: azrakRayo 3s both; box-shadow: 0 0 24px #73caff; }
+.azrak-rescate { position: absolute; width: 25%; height: 40%; left: 5%; top: 37%; z-index: 5; animation: azrakRescateLento 8.5s linear both; }
+.azrak-rescate img { position: absolute; object-fit: contain; width: 100%; height: 100%; }
+.azrak-rescate .rescate-aren { width: 48%; height: 53%; left: 25%; top: -16%; }
+.efecto-choque .azrak-cinema-effect::before { content: ""; position: absolute; left: 32%; top: 38%; width: 24%; height: 6%; background: #d0f9ff; box-shadow: 0 0 20px 10px #7fbcff; transform: rotate(9deg); animation: azrakRayo 5s both; }
+.efecto-choque .azrak-cinema-effect::after { content: ""; position: absolute; left: 53%; top: 40%; width: 24%; height: 5%; background: #ffe390; box-shadow: 0 0 25px 14px #f55915; transform: rotate(-7deg); animation: azrakRayo 5s both; }
+.efecto-guardianes .azrak-cinema-effect { background: repeating-linear-gradient(15deg, transparent 0 14%, #b4ef9733 15% 16%, transparent 18% 27%); animation: azrakBruma 5s both; }
+.efecto-guardianes .azrak-cinema-effect::after { content: ""; position: absolute; left: 56%; top: 39%; width: 24%; height: 2%; background: #fff5c1; box-shadow: 0 0 16px 7px #ffdf7b; transform: rotate(22deg); animation: azrakRayo 5s both; }
+.efecto-onda .azrak-cinema-effect { background: radial-gradient(ellipse at 77% 50%, transparent 20%, #17081cd9 43%, #9a4bf388 50%, transparent 65%); animation: azrakOnda 4s both; }
+.efecto-portal .azrak-cinema-effect::before { content: ""; position: absolute; left: 36%; top: 15%; width: 25%; height: 65%; border-radius: 50%; border: 10px solid #cfb0ff88; box-shadow: 0 0 40px #b368ff, inset 0 0 40px #b368ff; animation: azrakBruma 5s both; }
+.efecto-union .azrak-cinema-effect { background: conic-gradient(from 260deg at 78% 45%, transparent 0deg 8deg, #96edffba 9deg 13deg, transparent 15deg 23deg, #ade981bb 24deg 28deg, transparent 30deg 38deg, #ffe18cbb 39deg 43deg, transparent 45deg 53deg, #be9af0bb 54deg 58deg, transparent 60deg); animation: azrakUnion 8s both; }
+.efecto-amanecer { background-image: linear-gradient(#ffdfa74d, #d4f1f91f), url('../assets/images/fondos/reino-azrak/trono-v1.png'); }
+.efecto-amanecer .azrak-cinema-effect { background: radial-gradient(ellipse at 50% 20%, #fff5b88a, transparent 65%); }
+.cinematica-azrak.pausada *, .cinematica-azrak.pausada *::before, .cinematica-azrak.pausada *::after { animation-play-state: paused !important; }
+@keyframes azrakLlegada { from { opacity: 0; } to { opacity: 1; } }
+@keyframes azrakArrodillado { to { transform: translate(-50%, -85%) rotate(-12deg) scale(.9); } }
+@keyframes azrakDesvanecer { 0%, 35% { opacity: 1; } 75%, 100% { transform: translate(-50%, -25%) scale(.15); opacity: 0; filter: blur(12px); } }
+@keyframes azrakRegreso { from { opacity: 0; filter: blur(18px); transform: translate(-50%, -80%); } to { opacity: 1; filter: blur(0); transform: translate(-50%, -100%); } }
+@keyframes azrakSacudida { 25% { translate: -6px 0; } 75% { translate: 6px 0; } }
+@keyframes azrakDerrota { 0%, 45% { opacity: 1; } 100% { transform: translate(-50%, -130%) scale(.2); filter: blur(7px); opacity: 0; } }
+@keyframes azrakProyectil { 0%, 15% { opacity: 0; transform: translateX(0); } 30% { opacity: 1; } 90%, 100% { opacity: 0; transform: translateX(-310%); } }
+@keyframes azrakBruma { 0% { opacity: 0; } 35%, 70% { opacity: 1; } 100% { opacity: .25; } }
+@keyframes azrakHielo { from { transform: scaleY(0); transform-origin: bottom; } to { transform: scaleY(1); transform-origin: bottom; } }
+@keyframes azrakRayo { 0%, 15% { opacity: 0; scale: .1 1; } 25%, 80% { opacity: 1; scale: 1; } 100% { opacity: 0; } }
+@keyframes azrakRescateLento { 0% { transform: translate(0, 50%) rotate(-8deg); } 22% { transform: translate(70%, -45%) rotate(-12deg); } 75% { transform: translate(160%, -70%) rotate(-4deg); } 100% { transform: translate(290%, -110%) rotate(0); } }
+@keyframes azrakOnda { from { scale: .1; opacity: 0; transform-origin: 77% 50%; } 50% { opacity: 1; } to { scale: 2; opacity: .3; transform-origin: 77% 50%; } }
+@keyframes azrakUnion { 0%, 15% { opacity: 0; } 35%, 75% { opacity: 1; filter: brightness(1.3); } 100% { opacity: 0; } }
+.cinematica-azrak.movimiento-reducido *, .cinematica-azrak.movimiento-reducido *::before, .cinematica-azrak.movimiento-reducido *::after { animation-duration: .01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; }
+.cinematica-azrak.movimiento-reducido .azrak-rescate { animation: none !important; left: 35%; top: 22%; }
+/* Let the artwork fill a horizontal phone, with subtitles over its lower edge. */
+@media (max-height: 600px) and (orientation: landscape) {
+  .cinematica-azrak { grid-template-rows: minmax(0, 1fr); }
+  .azrak-cinema-illustration { object-fit: cover; object-position: var(--plano-foco, 50% 50%); }
+  .azrak-cinema-caption {
+    position: absolute; inset: auto 0 0; z-index: 8;
+    padding: 24px max(18px, env(safe-area-inset-right)) max(9px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+    background: linear-gradient(transparent, #09060ed9 35%, #09060ef2);
+    pointer-events: none;
+  }
+  .azrak-cinema-caption p { text-shadow: 0 1px 3px #000; }
+}
+@media (max-height: 500px) and (orientation: landscape) {
+  .azrak-cinema-caption p { font-size: .85rem; line-height: 1.35; margin-top: 4px; }
+  .azrak-cinema-caption span { font-size: .56rem; }
+  .cinematica-azrak nav button { font-size: .7rem; min-height: 30px; padding: 4px 10px; }
+  .azrak-puzzle-board { gap: 6px; margin: 6px auto; }
+  .azrak-puzzle-board:not(.tablero-eclipse) { grid-template-columns: repeat(4, minmax(0, 1fr)); max-width: 640px; }
+  .azrak-puzzle-board button { font-size: 1.15rem; }
+  .prueba-azrak .cabecera-prueba-bosque h2 { font-size: 1.2rem; margin-block: 4px; }
+  .prueba-azrak .cabecera-prueba-bosque p { font-size: .78rem; margin-block: 4px; }
+  .puzzle-azrak { padding: 4px; }
+  .puzzle-azrak button { padding: 5px; min-height: 38px; }
+  .azrak-puzzle-clues { padding: 6px; margin: 3px; font-size: .8rem; }
+  .azrak-puzzle-status { margin: 3px; font-size: .8rem; }
+}
+@media (orientation: portrait) {
+  .azrak-cinema-actor { max-width: 40%; }
+  .azrak-cinema-stage { background-size: auto 100%; }
+  .azrak-cinema-caption { padding-bottom: max(20px, env(safe-area-inset-bottom)); }
+}
+.vida-azrak { position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 1; }
+.lume-azrak { position: absolute; right: 14%; bottom: 8%; width: 22%; height: 60%; margin: 0; text-align: center; }
+.lume-figura { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 12px #ffe69d88); animation: lumeRespira 3s ease-in-out infinite; }
+.lume-azrak figcaption { position: absolute; bottom: -5%; left: 50%; transform: translateX(-50%); width: max-content; max-width: 170%; padding: 5px 9px; border: 1px solid #d6b77b; border-radius: 8px; background: #160e25e8; color: #fff0bd; font: 600 clamp(9px, 1.2vw, 13px)/1.3 system-ui; }
+.lume-cautiva::after { content: ''; position: absolute; inset: -3% -5% 0; border-radius: 48% 48% 12% 12%; border: 2px solid #bb83fb; background: repeating-linear-gradient(90deg, transparent 0 19%, #ad70e866 20% 21%, transparent 22% 25%); box-shadow: inset 0 0 25px #9d4eeaaa, 0 0 18px #9d4eea88; }
+.demonio-azrak { position: absolute; left: 0; width: 12%; aspect-ratio: 1; animation: demonioRecorre 22s linear infinite; animation-delay: var(--demora); }
+.demonio-vuelo { top: var(--altura); }
+.demonio-acecho { left: 74%; bottom: 26%; width: 19%; aspect-ratio: 607 / 239; animation: none; filter: brightness(.85); }
+.demonio-acecho img { transform-origin: 55% 100%; animation: acechoRespira 4s ease-in-out infinite; }
+@keyframes acechoRespira { 50% { transform: scaleY(1.025) translateY(-1px); } }
+.demonio-cuadro { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.demonio-vuelo .cuadro-0 { animation: demonioPaso .72s steps(1) infinite; }
+.demonio-vuelo .cuadro-1 { animation: demonioPaso .72s steps(1) infinite reverse; }
+.demonio-pasos .cuadro-0 { animation: demonioPaso 0.6s steps(1) infinite; }
+.demonio-pasos .cuadro-1 { animation: demonioPaso 0.6s steps(1) infinite reverse; }
+@keyframes demonioRecorre { from { left: -15%; } to { left: 110%; } }
+@keyframes demonioPlanea { 0%, 100% { transform: translateY(-6%) rotate(-5deg); } 50% { transform: translateY(8%) rotate(4deg); } }
+@keyframes demonioPaso { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+@keyframes lumeRespira { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.5%); } }
+#pantallaJuego:not(.activa) .vida-azrak *,
+#pantallaJuego.presentacion-mision-activa .vida-azrak *,
+#pantallaJuego.presentacion-mision-preparada .vida-azrak * { animation-play-state: paused; }
+@media (orientation: portrait) {
+  .lume-azrak { right: 9%; bottom: 12%; width: 29%; height: 51%; }
+  .demonio-vuelo { width: 18%; }
+  .demonio-acecho { width: 24%; left: 72%; bottom: 25%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vida-azrak * { animation: none !important; }
+  .demonio-azrak { left: 65%; }
+  .demonio-azrak + .demonio-azrak { left: 30%; }
+  .demonio-vuelo .cuadro-1 { display: none; }
+}
+
+/* Keep Aren on the open floor beside the command table. */
+.escenario-azrak[data-mision-azrak="6"] .personaje-imagen { --posicion-inicial-explorador: 45%; bottom: 2%; }
+.escenario.escenario-azrak[data-mision-azrak="3"] .personaje-imagen { bottom: -4%; }
+@media (max-width: 600px) and (orientation: portrait) {
+  .escenario.escenario-azrak[data-mision-azrak="3"] .personaje-imagen { bottom: 2%; }
+}
+.escenario-azrak[data-mision-azrak="8"] .fondo-escenario { object-fit: cover; scale: 1; }
+.portales-lume { position: absolute; inset: 0; width: 100%; height: 100%; }
+.portal-lume { opacity: 0; transition: opacity 1.1s ease; }
+.portal-lume.encendido { opacity: 1; }
+.rayo-lume { fill: none; stroke: #fff4ac; stroke-width: 8; stroke-linecap: round; filter: drop-shadow(0 0 9px #ffe77b); opacity: 0; }
+.rayo-lume.activo { opacity: 1; stroke-dasharray: 2000; animation: llamadaLume 1.6s ease-out both; }
+@keyframes llamadaLume { from { stroke-dashoffset: 2000; } to { stroke-dashoffset: 0; } }
+.escenario-azrak[data-mision-azrak="8"] .lume-azrak { left: 60%; right: auto; bottom: 5%; width: 18%; height: 42%; }
+.lume-gesto { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; opacity:0; transition:opacity .22s ease; filter:drop-shadow(0 0 14px #fff3a6); }
+.lume-libre .lume-figura { transition:opacity .22s ease; }
+.lume-azrak.invocando .lume-figura { opacity:0; }
+.lume-azrak.invocando .lume-gesto { opacity:1; }
+.cristal-union-lume { position: absolute; width: 25%; height: 30%; object-fit: contain; left: 50%; top: 47%; transition:top .6s cubic-bezier(.2,.8,.25,1),left .6s ease,filter .3s ease; filter: saturate(0) sepia(.4) brightness(1.5) drop-shadow(0 0 6px #ffe69d); }
+.lume-azrak.invocando .cristal-union-lume { left:14%; top:-19%; }
+.lume-azrak.invocacion-reducida .cristal-union-lume { transition:none; }
+.lume-azrak.invocando .cristal-union-lume { filter: saturate(0) sepia(.4) brightness(2) drop-shadow(0 0 18px #fff5b5); }
+.lume-azrak.invocando .lume-figura { filter: drop-shadow(0 0 18px #fff3a6); }
+.estado-portales-lume { position: absolute; top: 2%; left: 10%; right: 10%; margin: 0; padding: 5px 8px; border-radius: 8px; background: #130c21df; color: #fff1b9; text-align: center; font: 600 clamp(10px, 1.2vw, 14px)/1.3 system-ui; }
+@media (prefers-reduced-motion: reduce) { .portal-lume, .cristal-union-lume, .lume-gesto, .lume-libre .lume-figura { transition: none; } }
+
+/* Match painted crystal height despite the square canvas of the last three. */
+.panel-cristales #cristalPanelCumbres,
+.panel-cristales #cristalPanelHielo,
+.panel-cristales #cristalPanelAzrak { width: 37px; height: 37px; object-fit: contain; }
+@media (max-width: 700px) {
+  .panel-cristales #cristalPanelCumbres,
+  .panel-cristales #cristalPanelHielo,
+  .panel-cristales #cristalPanelAzrak { width: 31.5px; height: 31.5px; }
+}
+
+/* Una bandada distante sobre el castillo de la misión 6. */
+.demonio-vuelo.demonio-lejano {
+  width: var(--tamano-lejano); filter: brightness(.45) saturate(.35);
+  opacity: .72; animation-duration: 28s;
+}
+.demonio-lejano .cuadro-0, .demonio-lejano .cuadro-1 { animation-duration: .95s; }
+@media (prefers-reduced-motion: reduce) {
+  .demonio-azrak.demonio-lejano { left: var(--posicion-reducida); }
+}
+
+/* Silencio entre el sello y la restauración de los mundos. */
+.cinematica-azrak.interludio-silencioso, .interludio-silencioso .azrak-cinema-stage { background:#000; }
+.interludio-silencioso .azrak-cinema-caption { inset:0; width:100%; max-width:none; display:flex; align-items:center; justify-content:center; padding:12vw; background:none; border:0; box-shadow:none; }
+.interludio-silencioso .azrak-cinema-caption span { display:none; }
+.interludio-silencioso .azrak-cinema-caption p { max-width:760px; white-space:pre-line; text-align:center; font-size:clamp(1.1rem,3vw,1.8rem); line-height:1.7; animation:textoTrasBatalla 6.5s ease both; }
+@keyframes textoTrasBatalla { 0%,12% { opacity:0; } 30%,85% { opacity:1; } 100% { opacity:0; } }
+.cinematica-azrak.pausada .azrak-cinema-caption p { animation-play-state:paused; }
+.movimiento-reducido.interludio-silencioso .azrak-cinema-caption p { animation:none; }
+
+.camara-relato { margin:6px 0; line-height:1.4; }
+.camara-diferencias { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; margin:10px 0; }
+.camara-diferencias figure { min-width:0; margin:0; }
+.camara-diferencias figcaption { padding:5px; color:#ffdf9f; font-weight:700; }
+.camara-visor { width:100%; aspect-ratio:3/2; overflow:auto; border:2px solid #8d6b9e; border-radius:10px; touch-action:none; overscroll-behavior:contain; scrollbar-width:thin; cursor:crosshair; }
+.camara-visor:focus-visible { outline:3px solid #ffe09c; outline-offset:2px; }
+.camara-escena { position:relative; width:100%; aspect-ratio:3/2; user-select:none; }
+.camara-escena > img { display:block; width:100%; height:100%; max-width:none; pointer-events:none; }
+.camara-alteracion { position:absolute; overflow:hidden; pointer-events:none; mask-image:linear-gradient(to right,transparent,#000 4%,#000 96%,transparent),linear-gradient(to bottom,transparent,#000 4%,#000 96%,transparent); mask-composite:intersect; }
+.camara-alteracion img { position:absolute; max-width:none; pointer-events:none; }
+.diferencia-encontrada { position:absolute; transform:translate(-50%,-50%); border:2px solid #c4ffb9; border-radius:50%; box-shadow:0 0 6px #12381c; color:white; display:grid; place-items:center; font-size:clamp(12px,2vw,22px); pointer-events:none; }
+.camara-cursor { position:absolute; width:18px; height:18px; transform:translate(-50%,-50%); border:2px dashed white; border-radius:50%; pointer-events:none; }
+.camara-cursor[hidden] { display:none; }
+.camara-controles { display:flex; flex-wrap:wrap; justify-content:center; gap:6px; }
+.puzzle-azrak .camara-controles button { padding:7px 10px; font-size:.85rem; min-height:44px; }
+.camara-hallazgos { font-size:.78rem; color:#c4ffb9; line-height:1.4; margin:6px 0; }
+.camara-diferencias.cargando { visibility:hidden; }
+.puzzle-azrak:has(.camara-diferencias) { width:100%; box-sizing:border-box; }
+.prueba-azrak:has(.camara-diferencias) .estado-prueba-bosque { display:none; }
+@media(max-width:600px) and (orientation:portrait) { .camara-diferencias { grid-template-columns:1fr; } }
+@media(max-height:600px) and (orientation:landscape) {
+ .camara-diferencias { max-width:690px; margin:5px auto; }
+ .camara-relato { font-size:.8rem; }
+ .puzzle-azrak:has(.camara-diferencias) .azrak-puzzle-status { min-height:0; margin:5px 0; }
+}

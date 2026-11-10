@@ -1,0 +1,242 @@
+/* Presentation only. The original book/crystal scene and game rules are preserved. */
+body.menu-fondo-pendiente #pantallaMenu .menu-contenido {
+    opacity: 0; visibility: hidden; pointer-events: none; --menu-motion: paused;
+}
+body.menu-fondo-pendiente > .aviso-actualizacion-pwa,
+body.menu-fondo-pendiente > .btn-saltar-narrativa { visibility: hidden; }
+body.menu-entrada #pantallaMenu .menu-contenido {
+    animation: menu-panel-arrival 550ms ease-out both;
+    animation-play-state: var(--menu-motion);
+    overflow: visible;
+}
+body.menu-entrada #pantallaMenu .menu-contenido > * {
+    animation: menu-item-arrival 450ms ease-out both;
+    animation-play-state: var(--menu-motion);
+}
+body.menu-entrada #pantallaMenu .menu-contenido > .subtitulo { animation-delay: 150ms; }
+body.menu-entrada #pantallaMenu .menu-contenido > button {
+    --piece-duration: 800ms;
+    z-index: 5; transform-origin: 50% 50%;
+    animation: menu-button-drop var(--piece-duration) cubic-bezier(.45,.04,.78,.65) var(--piece-delay) both,
+        menu-button-settle 200ms ease-out calc(var(--piece-delay) + var(--piece-duration)) forwards;
+    animation-play-state: var(--menu-motion), var(--menu-motion);
+}
+body.menu-entrada #pantallaMenu #btnVersus { --piece-delay: 400ms; }
+body.menu-entrada #pantallaMenu #btnModosJuego { --piece-delay: 1500ms; }
+body.menu-entrada #pantallaMenu #btnRankingMenu { --piece-delay: 2600ms; --piece-duration: 750ms; }
+body.menu-entrada #pantallaMenu #btnTienda { --piece-delay: 3650ms; --piece-duration: 700ms; }
+body.menu-entrada #pantallaMenu #btnConfiguracion { --piece-delay: 4650ms; --piece-duration: 700ms; }
+body.menu-entrada #pantallaMenu .estado-offline-juego { animation-delay: 5550ms; }
+@keyframes menu-panel-arrival { from { opacity: 0; } to { opacity: 1; } }
+@keyframes menu-item-arrival {
+    from { opacity: 0; transform: translateY(8px); visibility: hidden; }
+    to { opacity: 1; transform: translateY(0); visibility: visible; }
+}
+@keyframes menu-button-drop {
+    0% { opacity: 0; visibility: hidden; transform: perspective(700px) translateY(-76px) rotateX(12deg) scale(1.65); }
+    14% { opacity: 1; visibility: visible; }
+    100% { opacity: 1; visibility: visible; transform: perspective(700px) translateY(0) rotateX(0) scale(1); }
+}
+@keyframes menu-button-settle {
+    0% { transform: translate(0, 0) scale(1); }
+    22% { transform: translate(0, 2px) scale(1.025, .95); }
+    45% { transform: translate(-2px, 0) rotate(-.4deg) scale(1.01, .985); }
+    72% { transform: translate(1.5px, 0) rotate(.3deg) scale(1); }
+    100% { transform: translate(0, 0) rotate(0) scale(1); }
+}
+.menu-impact-layer {
+    position: absolute; inset: 0; z-index: 8; overflow: hidden; pointer-events: none;
+}
+.menu-impact-dust { position: absolute; height: 1px; pointer-events: none; }
+.menu-impact-dust i {
+    position: absolute; top: -4px; width: 22px; height: 12px; border-radius: 50%; opacity: 0;
+    background: radial-gradient(ellipse, #d4c09ccc, #baa47c66 45%, transparent 73%);
+    animation: menu-dust-scatter 520ms ease-out both;
+}
+.menu-impact-dust .menu-dust-grain {
+    width: 4px; height: 3px; border-radius: 1px; background: #e5cc9fcc;
+}
+@keyframes menu-dust-scatter {
+    0% { opacity: 0; transform: translate(0, 0) scale(.35); }
+    12% { opacity: .75; }
+    45% { opacity: .5; transform: translate(calc(var(--dust-x) * .7), var(--dust-y)) scale(1.15); }
+    100% { opacity: 0; transform: translate(var(--dust-x), 5px) scale(1.65); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .menu-impact-layer { display: none; }
+    body.menu-entrada #pantallaMenu .menu-contenido,
+    body.menu-entrada #pantallaMenu .menu-contenido > *,
+    body.menu-entrada #pantallaMenu .menu-contenido > button { animation: none; }
+}
+#pantallaMenu, #selectorModosJuego { --menu-motion: paused; }
+#pantallaMenu[data-menu-effects="running"],
+#selectorModosJuego[data-menu-effects="running"] { --menu-motion: running; }
+
+#pantallaMenu .titulo.menu-logo { position: relative; flex-shrink: 0; width: min(100%, 320px); margin: 0; }
+.menu-logo-arte { position: relative; display: block; width: 100%; aspect-ratio: 5 / 2; }
+.menu-logo-arte[hidden] { display: none; }
+.menu-logo-arte > img { display: block; width: 100%; height: auto; }
+.menu-logo[data-logo-ready] .menu-logo-texto {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+}
+.menu-logo-destello {
+    position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+    -webkit-mask: url('../assets/images/ui/menu-logo-fantasia-v2.webp') center / contain no-repeat;
+    mask: url('../assets/images/ui/menu-logo-fantasia-v2.webp') center / contain no-repeat;
+}
+.menu-logo-destello::after {
+    content: ''; position: absolute; inset: -20% auto -20% 0; width: 24%;
+    background: linear-gradient(100deg, transparent, #fff2bb99 48%, #fffbe4bb 52%, transparent);
+    transform: translateX(-180%) skewX(-18deg); opacity: 0;
+    animation: menu-title-glint 11s ease-in-out infinite;
+    animation-play-state: var(--menu-motion);
+}
+@keyframes menu-title-glint {
+    0%, 68% { transform: translateX(-180%) skewX(-18deg); opacity: 0; }
+    71% { opacity: .55; }
+    84% { opacity: .55; }
+    88%, 100% { transform: translateX(580%) skewX(-18deg); opacity: 0; }
+}
+
+#pantallaMenu .menu-contenido > button { position: relative; isolation: isolate; overflow: hidden; }
+/* A short light follows the actual rounded border; no rotating full-screen layers. */
+@supports (offset-path: inset(1px round 12px)) {
+    #pantallaMenu .menu-contenido > button::after {
+        content: ''; position: absolute; top: 0; left: 0; width: 42px; height: 2px;
+        pointer-events: none; border-radius: 50%;
+        background: linear-gradient(90deg, transparent, #ffe8a8, transparent);
+        box-shadow: 0 0 5px #e9cd7980; opacity: 0;
+        offset-path: inset(1px round 12px); offset-rotate: auto;
+        animation: menu-border-glint 10s linear infinite;
+        animation-play-state: var(--menu-motion);
+    }
+    #pantallaMenu #btnModosJuego::after { animation-delay: -2s; }
+    #pantallaMenu #btnRankingMenu::after { animation-delay: -4s; }
+    #pantallaMenu #btnTienda::after { animation-delay: -6s; }
+    #pantallaMenu #btnConfiguracion::after { animation-delay: -8s; }
+    #pantallaMenu .menu-contenido > button:disabled::after { display: none; }
+}
+@keyframes menu-border-glint {
+    0% { offset-distance: 0%; opacity: 0; }
+    8%, 82% { opacity: .65; }
+    92%, 100% { offset-distance: 100%; opacity: 0; }
+}
+
+#selectorModosJuego .tarjeta-modo-torre { border-color: #b69bdb99; }
+#selectorModosJuego .tarjeta-modo-torre .modo-ilustracion::after {
+    content: ''; position: absolute; inset: -8%; pointer-events: none;
+    background: radial-gradient(ellipse at 53% 30%, #9f62dc61, transparent 55%),
+        linear-gradient(120deg, transparent 25%, #8b59c629 50%, transparent 72%);
+    opacity: .45; transform: translate3d(-2%, 0, 0);
+    animation: menu-tower-mist 9s ease-in-out infinite alternate;
+    animation-play-state: var(--menu-motion);
+}
+#selectorModosJuego .tarjeta-modo-torre::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+    box-shadow: inset 0 0 26px #ac70e92b; opacity: .5;
+    animation: menu-tower-aura 5s ease-in-out infinite alternate;
+    animation-play-state: var(--menu-motion);
+}
+#selectorModosJuego .tarjeta-modo-versus .modo-ilustracion b::before {
+    content: ''; position: absolute; z-index: -1; inset: -16px -18px;
+    pointer-events: none; border: 1px solid #a9ebe15c; border-radius: 50%;
+    background: radial-gradient(ellipse, #70d6ce29, transparent 70%);
+    box-shadow: 0 0 15px #60ddd32e; opacity: .35;
+    animation: menu-vs-pulse 4.8s ease-in-out infinite;
+    animation-play-state: var(--menu-motion);
+}
+@keyframes menu-tower-mist { to { opacity: .8; transform: translate3d(2%, -2%, 0); } }
+@keyframes menu-tower-aura { to { opacity: .95; } }
+@keyframes menu-vs-pulse {
+    0%, 100% { transform: scale(.92); opacity: .3; }
+    50% { transform: scale(1.12); opacity: .7; }
+}
+
+/* Five individually compressed scenic strips, with live translated button labels above them. */
+#pantallaMenu .menu-contenido { width: min(430px, calc(100vw - 48px)); }
+#pantallaMenu .titulo.menu-logo { width: min(100%, 360px); }
+#pantallaMenu #btnVersus {
+    --menu-button-art: url('../assets/images/ui/menu-button-modes-v1.webp');
+    --menu-button-edge: #eac379; --menu-button-glow: #e8ae4b33;
+}
+#pantallaMenu #btnModosJuego {
+    --menu-button-art: url('../assets/images/ui/menu-button-adventure-v1.webp');
+    --menu-button-edge: #c4de76; --menu-button-glow: #a2dc6340;
+}
+#pantallaMenu #btnRankingMenu {
+    --menu-button-art: url('../assets/images/ui/menu-button-ranking-v1.webp');
+    --menu-button-edge: #eac16a; --menu-button-glow: #e3b35238;
+}
+#pantallaMenu #btnTienda {
+    --menu-button-art: url('../assets/images/ui/menu-button-shop-v1.webp');
+    --menu-button-edge: #cba5f1; --menu-button-glow: #ac7be53b;
+}
+#pantallaMenu #btnConfiguracion {
+    --menu-button-art: url('../assets/images/ui/menu-button-settings-v1.webp');
+    --menu-button-edge: #79c9d1; --menu-button-glow: #6bc6d133;
+}
+#pantallaMenu .menu-contenido > :is(#btnVersus, #btnModosJuego, #btnRankingMenu, #btnTienda, #btnConfiguracion) {
+    display: block; flex-shrink: 0; width: min(100%, 360px); min-height: 60px;
+    padding: 14px 30px; margin: 0; border: 1px solid var(--menu-button-edge); border-radius: 13px;
+    background-color: #08161d;
+    background-image: linear-gradient(90deg, #02080b1a, #02080b55 38%, #02080b3b 63%, #02080b12), var(--menu-button-art);
+    background-position: center; background-size: cover; background-repeat: no-repeat;
+    color: #fff4d6; font: 700 clamp(17px, 2.1vw, 21px)/1.2 Georgia, 'Times New Roman', serif;
+    text-align: center; text-shadow: 0 2px 3px #000, 0 0 8px #000;
+    box-shadow: inset 0 0 0 3px #050d13a1, inset 0 0 0 4px #ffe3a126, 0 0 12px var(--menu-button-glow), 0 5px 12px #0006;
+    backdrop-filter: none; -webkit-backdrop-filter: none;
+    transition: border-color .18s, box-shadow .18s;
+}
+#pantallaMenu .menu-contenido > button::before {
+    content: ''; position: absolute; right: 15px; top: 50%; width: 8px; height: 8px;
+    transform: translateY(-50%) rotate(-45deg); pointer-events: none;
+    border-right: 2px solid #f6e7b5; border-bottom: 2px solid #f6e7b5;
+}
+#pantallaMenu .menu-contenido > button::after {
+    background: linear-gradient(90deg, transparent, var(--menu-button-edge), #fff7d9, transparent);
+}
+#pantallaMenu .menu-contenido > button:focus-visible { outline: 2px solid #fff1bc; outline-offset: 3px; }
+#pantallaMenu .menu-contenido > button:hover { border-color: #fff0b5; }
+#pantallaMenu .subtitulo { font-family: Georgia, 'Times New Roman', serif; color: #eed694; }
+@media (max-width: 700px) {
+    #pantallaMenu .menu-contenido { width: min(100%, 410px); }
+}
+
+/* Also pause the existing book/crystal scene when the menu or document is hidden. */
+/* The background, crystal and torches share image coordinates and camera motion. */
+#pantallaMenu .menu-escena-animada::before{content:none;background:none;animation:none}
+.menu-paisaje{position:absolute;z-index:0;left:0;top:0;width:var(--menu-camera-size,106vmax);height:var(--menu-camera-size,106vmax);transform:translate3d(var(--menu-start-x,-3vw),var(--menu-start-y,-3vh),0)}
+.menu-paisaje::before{content:'';position:absolute;inset:0;background:url('../assets/images/fondos/menu-inicio-aventura.png') center/cover no-repeat;filter:saturate(.94) brightness(.88)}
+#pantallaMenu .menu-paisaje .menu-cristal-flotante{left:50%;top:68%;width:clamp(68px,9%,148px);opacity:0;animation:none}
+body.menu-camara-inicio .menu-paisaje{animation:menu-camera-arrival 4.8s ease-in-out both}
+body.menu-camara-lista .menu-paisaje{animation:menu-camera-return 32s ease-in-out infinite alternate}
+body:is(.menu-camara-inicio,.menu-camara-lista) #pantallaMenu .menu-paisaje .menu-cristal-flotante{opacity:.94;animation:menu-crystal-emerge 1.8s ease-out both,menuCristalFlota 4.8s ease-in-out 1.8s infinite}
+@keyframes menu-camera-arrival{0%,37.5%{transform:translate3d(var(--menu-start-x),var(--menu-start-y),0)}100%{transform:translate3d(var(--menu-scenic-x),var(--menu-scenic-y),0)}}
+@keyframes menu-camera-return{from{transform:translate3d(var(--menu-scenic-x),var(--menu-scenic-y),0)}to{transform:translate3d(var(--menu-start-x),var(--menu-start-y),0)}}
+@keyframes menu-crystal-emerge{from{opacity:0;transform:translate(-50%,-30%) scale(.25)}to{opacity:.94;transform:translate(-50%,-100%) scale(1)}}
+
+#pantallaMenu .menu-escena-animada::before,
+#pantallaMenu .menu-escena-animada *,
+#pantallaMenu .menu-escena-animada *::before,
+#pantallaMenu .menu-escena-animada *::after { animation-play-state: var(--menu-motion); }
+
+@media (max-height: 650px) {
+    #pantallaMenu .titulo.menu-logo { width: min(100%, 250px); }
+    #pantallaMenu .menu-contenido > :is(#btnVersus, #btnModosJuego, #btnRankingMenu, #btnTienda, #btnConfiguracion) {
+        min-height: 44px; padding-block: 9px; font-size: 17px;
+    }
+}
+@media (max-height: 430px) {
+    #pantallaMenu .titulo.menu-logo { width: min(100%, 210px); }
+}
+@media (prefers-reduced-motion: reduce) {
+    body:is(.menu-camara-inicio,.menu-camara-lista) .menu-paisaje{animation:none;transform:translate3d(var(--menu-scenic-x),var(--menu-scenic-y),0)}
+    body:is(.menu-camara-inicio,.menu-camara-lista) #pantallaMenu .menu-paisaje .menu-cristal-flotante{animation:none;transform:translate(-50%,-100%)}
+    .menu-logo-destello { display: none; }
+    #pantallaMenu .menu-contenido > button::after { display: none; animation: none; }
+    #selectorModosJuego .tarjeta-modo-torre .modo-ilustracion::after,
+    #selectorModosJuego .tarjeta-modo-torre::before,
+    #selectorModosJuego .tarjeta-modo-versus .modo-ilustracion b::before { animation: none; }
+    #pantallaMenu .menu-contenido > :is(#btnVersus, #btnModosJuego, #btnRankingMenu, #btnTienda, #btnConfiguracion) { transition: none; }
+}

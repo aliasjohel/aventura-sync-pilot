@@ -1,0 +1,139 @@
+/* Compact main menu and illustrated mode selection. */
+.panel-configuracion { max-height: calc(100dvh - 44px); overflow-y: auto; }
+#pantallaMenu .menu-perfil { order: -1; width: 100%; display: flex; justify-content: flex-start; }
+#pantallaMenu #btnAbrirPruebasMenu { width: auto; min-height: 44px; margin: 0 0 0 auto; padding: 8px 10px; font-size: 12px; color: #ffedc7; border-radius: 12px; border: 1px solid #dbbd7855; background: #071b24b3; box-shadow: none; }
+#pantallaMenu #btnMiAvatar { width: auto; margin: 0; padding: 4px 10px 4px 4px; gap: 8px; border: 1px solid #dbbd7855; border-radius: 40px; background: #071b24b3; color: #ffedc7; font-size: 12px; box-shadow: none; }
+#pantallaMenu #avatarMenu .player-avatar { width: 42px; height: 42px; }
+#pantallaMenu #btnModosJuego { border-color: #d7b571aa; background: linear-gradient(160deg,#80602288,#2d25184d); }
+@media (max-width: 360px) {
+ #pantallaMenu .menu-recursos + .menu-contenido > #btnModosJuego { font-size: 16px; padding-inline: 18px; white-space: nowrap; }
+}
+#pantallaMenu #btnTienda { border-color: #bda0ef88; background: linear-gradient(160deg,#51406c77,#21152f55); display: flex; align-items: center; justify-content: center; gap: 12px; }
+#btnTienda small { font: 10px/1.2 system-ui,sans-serif; padding: 4px 6px; border: 1px solid #cab2f44d; border-radius: 5px; color: #dfcffa; }
+.menu-dialogo { margin: auto; width: min(820px,calc(100vw - 28px)); max-height: calc(100dvh - 28px); padding: 24px; overflow-y: auto; border: 1px solid #aa905f; border-radius: 22px; background: radial-gradient(ellipse at 0 0,#25415866,transparent 65%),#0b1420; color: #f8edd8; box-shadow: 0 25px 100px #000c; }
+.menu-dialogo::backdrop { background: #020811dc; backdrop-filter: blur(6px); }
+.menu-dialogo-cabecera { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; text-align: left; }
+.menu-dialogo-cabecera small { font: 700 10px/1.5 system-ui,sans-serif; letter-spacing: .18em; color: #d7b979; }
+.menu-dialogo-cabecera h2 { margin-top: 5px; font: 700 clamp(23px,4vw,30px)/1.15 Georgia,serif; }
+.menu-dialogo .menu-dialogo-cabecera button { margin: 0; padding: 0; width: 42px; height: 42px; min-width: 42px; border: 1px solid #8196ac55; border-radius: 50%; color: #eee9de; background: #c8dfff0c; font-size: 26px; box-shadow: none; }
+.tarjetas-modos { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+.menu-dialogo .tarjeta-modo { position: relative; isolation: isolate; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-end; min-height: 360px; width: 100%; margin: 0; padding: 0; overflow: hidden; border: 1px solid #b9905988; border-radius: 15px; color: #fff7e5; background: #151423; text-align: left; box-shadow: 0 12px 25px #0004; text-shadow: 0 2px 8px #000; transition: border-color .2s,transform .2s; }
+.menu-dialogo .tarjeta-modo:hover { transform: translateY(-3px); border-color: #f9d98c; }
+.tarjeta-modo .modo-ilustracion { position: absolute; inset: 0; z-index: -2; background: url('../assets/images/fondos/reino-azrak/torre-centinela-v1.png') 65% center/cover; }
+.tarjeta-modo-aventura .modo-ilustracion { background-image: url('../assets/images/ui/adventure-card-v1.webp'); background-position: center 35%; }
+.tarjeta-modo-aventura .modo-etiqueta { color: #ffe5a1; }
+#inicioSalaVersus > .modos-online { margin-top: 0; }
+#inicioSalaVersus .modos-guia { width: 100%; margin: 12px 0; min-height: 44px; font-size: 14px; }
+#selectorModosJuego .menu-dialogo-cabecera { position: sticky; top: -24px; z-index: 3; padding-block: 8px; background: #0b1420; }
+@media (max-width: 540px) {
+ #selectorModosJuego .menu-dialogo-cabecera { top: -17px; }
+}
+@media (max-width: 360px) {
+ #inicioSalaVersus > .modos-online { grid-template-columns: 1fr; }
+}
+.tarjeta-modo::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(180deg,#0b10201f 15%,#0b102066 40%,#0b1020ed 72%,#0b1020 100%); }
+.modo-etiqueta { position: absolute; top: 16px; left: 16px; padding: 7px 9px; border: 1px solid #d4b57866; border-radius: 5px; background: #060c16bd; color: #edcd8e; font: 700 9px/1.3 system-ui,sans-serif; letter-spacing: .1em; }
+.modo-textos { display: flex; flex-direction: column; padding: 22px; gap: 11px; }
+.modo-textos > strong { font: 700 32px/1.1 Georgia,serif; color: #fff0c8; }
+.modo-textos > span:not(.modo-entrar) { color: #c6cfdf; font: 14px/1.55 system-ui,sans-serif; }
+.modo-textos .modo-entrar { display: flex; justify-content: space-between; align-items: center; padding-top: 14px; margin-top: 5px; border-top: 1px solid #d9b77844; color: #f1cc85; font: 700 13px/1.3 system-ui,sans-serif; }
+.modo-entrar b { font-size: 23px; }
+.menu-dialogo .tarjeta-modo-versus { border-color: #69c2d17d; }
+.tarjeta-modo-versus .modo-ilustracion { background: radial-gradient(ellipse at 50% 25%,#507b8955,transparent 60%),url('../assets/images/fondos/bosque-10.png') center/cover; }
+.tarjeta-modo-versus .modo-ilustracion img { position: absolute; top: 7%; width: 54%; height: 64%; object-fit: contain; filter: drop-shadow(0 0 12px #090f16); }
+.modo-heroe { left: -2%; }
+.modo-rival { right: -2%; transform: scaleX(-1); }
+.tarjeta-modo-versus .modo-ilustracion b { position: absolute; top: 31%; left: 50%; transform: translate(-50%,-50%) rotate(-9deg); font: italic 900 38px/1 Georgia,serif; color: #f7dc99; text-shadow: 0 0 20px #5cf6eb,0 3px 3px #000; }
+.tarjeta-modo-versus .modo-etiqueta { color: #b7f2f1; border-color: #84e3e25e; }
+.menu-dialogo .modos-guia { display: flex; justify-content: center; align-items: center; gap: 12px; width: 100%; margin: 18px 0 0; padding: 13px; border: 1px solid #799abf44; border-radius: 9px; background: #b3d5ff08; color: #ccdcea; font-size: 13px; box-shadow: none; }
+.menu-dialogo button:focus-visible { outline: 3px solid #b1f5f0; outline-offset: 3px; }
+.tienda-dialogo { max-width: 430px; text-align: center; }
+.tienda-emblema { font-size: 75px; color: #e0b66c; text-shadow: 0 0 35px #dc9e5355; margin: 15px; }
+.tienda-dialogo p { color: #c7c9d8; font-size: 14px; line-height: 1.6; margin: 10px 0; }
+.tienda-dialogo #tiendaIrPerfil { margin: 24px 0 0; width: 100%; }
+@media (max-width: 540px) {
+ .menu-dialogo { padding: 17px; }
+ .tarjetas-modos { grid-template-columns: 1fr; gap: 12px; }
+ .menu-dialogo .tarjeta-modo { min-height: 238px; }
+ .tarjeta-modo .modo-ilustracion { background-position: 62% 44%; }
+ .modo-textos { padding: 18px; gap: 6px; }
+ .modo-textos > strong { font-size: 28px; }
+ .modo-textos > span:not(.modo-entrar) { font-size: 12px; max-width: 260px; }
+ .modo-textos .modo-entrar { padding-top: 9px; margin-top: 3px; }
+ .tarjeta-modo-versus .modo-ilustracion img { top: 2%; height: 75%; width: 43%; }
+ .tarjeta-modo-versus .modo-ilustracion b { top: 29%; font-size: 31px; }
+ .tarjeta-modo::after { background: linear-gradient(180deg,#0b102012,#0b102025 24%,#0b1020db 58%,#0b1020 100%); }
+}
+@media (min-width: 541px) and (max-height: 500px) {
+ .menu-dialogo { padding: 15px; }
+ .menu-dialogo-cabecera { margin-bottom: 12px; }
+ .menu-dialogo .tarjeta-modo { min-height: 206px; }
+ .modo-textos { padding: 16px; gap: 6px; }
+ .modo-textos > strong { font-size: 26px; }
+ .modo-textos > span:not(.modo-entrar) { font-size: 12px; }
+ .modo-textos .modo-entrar { padding-top: 8px; margin-top: 0; }
+ .menu-dialogo .modos-guia { margin-top: 12px; padding: 10px; }
+}
+@media (prefers-reduced-motion: reduce) { .menu-dialogo .tarjeta-modo { transition: none; } }
+/* Free introductory shop collection. */
+#tiendaMenu { max-width: 760px; text-align: left; }
+#tiendaMenu .menu-dialogo-cabecera { flex-wrap: wrap; }
+#tiendaMenu #cerrarTiendaMenu { width: auto; height: auto; min-height: 44px; padding: 9px 12px; border-radius: 10px; font-size: 13px; white-space: nowrap; }
+.tienda-vista { display: flex; align-items: center; gap: 24px; margin: 22px 0; padding: 22px; border: 1px solid #d8bc7955; border-radius: 16px; background: radial-gradient(ellipse at left,#83704033,transparent),#060d1866; }
+#tiendaAvatarPreview .player-avatar { width: 150px; height: 150px; }
+.tienda-vista small { color: #dfc38f; font-size: 10px; letter-spacing: .15em; }
+.tienda-vista h3 { margin: 8px 0; font: bold 26px Georgia,serif; }
+#tiendaAplicarMarco { margin: 8px 0 0; font-size: 13px; }
+#tiendaAplicarMarco:disabled { opacity: .65; cursor: default; }
+.tienda-seccion { font-size: 15px; margin-bottom: 14px; }
+.tienda-marcos { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; }
+#tiendaMenu .tienda-marcos button { display: flex; flex-direction: column; align-items: center; gap: 8px; width: 100%; margin: 0; padding: 12px 4px; border: 2px solid #a7c0de22; border-radius: 12px; background: #ffffff05; color: #f2e5cb; font-size: 13px; box-shadow: none; }
+.tienda-marcos .player-avatar { width: 92px; height: 92px; }
+#tiendaMenu .tienda-marcos button[aria-pressed="true"] { border-color: #ffe08a; background: #ffe08a12; }
+#tiendaEstado { color: #ffe08a; }
+#tiendaEstado:empty { display: none; }
+.tienda-futuro { margin-top: 20px; padding: 16px; border: 1px solid #a993d344; border-radius: 12px; background: #a993d30a; }
+.tienda-futuro strong { color: #dac8f5; }
+@media (max-width: 540px) { .tienda-vista { flex-direction: column; gap: 10px; text-align: center; padding: 16px; } #tiendaAvatarPreview .player-avatar { width: 120px; height: 120px; } .tienda-marcos .player-avatar { width: 76px; height: 76px; } }
+
+/* El camino de los cinco cristales. */
+.mapa-aventura { width: min(690px, calc(100vw - 24px)); background: radial-gradient(ellipse at 20% 25%,#234d3b88,transparent 60%),#101e22; }
+.mapa-intro, .mapa-estado { color: #d5dcca; line-height: 1.6; margin: 12px 0; }
+.mapa-aventura #continuarMapaAventura { width: 100%; min-height: 50px; margin: 6px 0; border: 1px solid #dcca80; border-radius: 12px; color: #19261b; background: linear-gradient(135deg,#f2df99,#c5ab64); font-size: 16px; }
+.mapa-estado { font-size: 13px; min-height: 40px; }
+.mapa-camino { position: relative; display: grid; gap: 36px; padding: 24px 0 30px; }
+.mapa-camino::before { content: ''; position: absolute; top: 25px; bottom: 25px; left: 50%; border-left: 4px dashed #bfa97966; }
+.mapa-aventura .mapa-mundo { position: relative; display: grid; gap: 7px; width: 87%; min-height: 120px; margin: 0; padding: 22px 65px 22px 22px; overflow: visible; text-align: left; color: #fff8de; border: 1px solid #b9a577; border-radius: 18px; background: linear-gradient(100deg,#10251dec,#10251d99),url('../assets/images/fondos/menu-inicio-aventura.png') center/cover; box-shadow: 0 8px 20px #0005; }
+.mapa-aventura .mapa-mundo:nth-child(even) { justify-self: end; }
+.mapa-aventura .mapa-mundo-1 { background-image: linear-gradient(100deg,#39240dec,#39240d88),url('../assets/images/fondos/desierto-1.png'); }
+.mapa-aventura .mapa-mundo-2 { background-image: linear-gradient(100deg,#152f49ec,#152f4988),url('../assets/images/fondos/cumbres-1.png'); }
+.mapa-aventura .mapa-mundo-3 { background-image: linear-gradient(100deg,#252c4dec,#252c4d88),url('../assets/images/fondos/hielo-1.png'); }
+.mapa-aventura .mapa-mundo-4 { background-image: linear-gradient(100deg,#2e173eec,#2e173e88),url('../assets/images/fondos/reino-azrak/entrada-v1.png'); }
+.mapa-numero { font: 700 11px/1.2 system-ui,sans-serif; letter-spacing: .15em; color: #e1c782; }
+.mapa-mundo strong { font: 700 19px/1.25 Georgia,serif; }
+.mapa-mundo small { font: 12px/1.4 system-ui,sans-serif; }
+.mapa-aventura .mapa-mundo:disabled { opacity: .65; filter: saturate(.25); cursor: not-allowed; }
+.mapa-aventura .mapa-mundo[aria-expanded="true"] { outline: 2px solid #ffe2a0; outline-offset: 4px; }
+.mapa-aren { position: absolute; right: -16px; bottom: 4px; width: 90px; height: 112px; object-fit: contain; filter: drop-shadow(0 5px 7px #0008); pointer-events: none; }
+.mapa-recien-abierto { animation: mapa-desbloqueo 1.3s ease-out 2; }
+@keyframes mapa-desbloqueo { 0% { box-shadow: 0 0 0 0 #ffe1a0aa; } 100% { box-shadow: 0 0 0 15px #ffe1a000; } }
+.mapa-misiones { scroll-margin-top: 16px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+.mapa-misiones h3 { grid-column: 1 / -1; margin: 0 0 10px; font: 700 23px/1.3 Georgia,serif; color: #f6e2ad; }
+.mapa-aventura .mapa-mision { width: 100%; min-height: 85px; margin: 0; padding: 14px; border: 1px solid #ac936a66; border-radius: 12px; color: #f8efd9; background: #ffffff08; text-align: left; box-shadow: none; }
+.mapa-mision strong, .mapa-mision span { display: block; font: 600 14px/1.5 system-ui,sans-serif; }
+.mapa-mision span { margin-top: 6px; font-size: 11px; color: #d4c399; }
+.mapa-aventura .mapa-mision:disabled { opacity: .48; cursor: not-allowed; }
+.mapa-pie { margin-top: 24px; padding-top: 16px; border-top: 1px solid #c9b68444; }
+.mapa-pie p { font-size: 12px; line-height: 1.6; color: #bcc8bf; }
+.mapa-aventura #nuevaDesdeMapa { width: 100%; margin: 12px 0 0; padding: 12px; border: 1px solid #d2b59166; border-radius: 10px; background: transparent; color: #e5d4b4; font-size: 13px; box-shadow: none; }
+.mapa-aventura [hidden] { display: none !important; }
+.mapa-aventura button:focus-visible { outline: 3px solid #fff0ad; outline-offset: 3px; }
+@media (max-width: 420px) { .mapa-aventura { padding: 18px; } .mapa-misiones { grid-template-columns: 1fr; } .mapa-mundo strong { font-size: 17px; } }
+@media (prefers-reduced-motion: reduce) { .mapa-recien-abierto { animation: none; } }
+@keyframes mapa-viaje { from { transform: translate(-35px,-120px); opacity: 0; } to { transform: translate(0,0); opacity: 1; } }
+.mapa-aren-llegando { animation: mapa-viaje 1s ease-out both; }
+@media(prefers-reduced-motion:reduce) { .mapa-aren-llegando { animation: none; } }
+
+.mapa-mision .mapa-recompensa{display:block;margin-top:8px;font:600 11px/1.45 system-ui,sans-serif;color:#f0d58b;overflow-wrap:anywhere}
+.mapa-mision[data-reward-state="claimed"] .mapa-recompensa{color:#a2dfad}
+.mapa-mision[data-reward-state="processing"] .mapa-recompensa{color:#b9dff5}

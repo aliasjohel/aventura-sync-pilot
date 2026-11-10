@@ -1,0 +1,847 @@
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  root.AzrakWorld = api;
+})(typeof globalThis === 'object' ? globalThis : this, () => {
+  'use strict';
+  const base = 'assets/images/fondos/reino-azrak/';
+  const sprites = 'assets/images/personajes/versus/';
+  const missions = [
+    ['La puerta de ceniza', 'entrada', 'Los cuatro cristales llevan a Aren al reino de Azrak. Tras él, la grieta se cierra. Una brasa verde entre las rocas le recuerda que todavía hay vida que proteger.'],
+    ['El puente de las runas', 'entrada', 'El puente se desarma sobre el abismo. Cinco runas quedaron escondidas entre las ruinas. Aren deberá encontrar la hoja, el sol, la nube, el copo de nieve y la estrella para reconstruir el camino.', 'runas-azrak'],
+    ['La sombra del centinela', 'entrada', 'Shadow baja de la torre y cierra el paso. «Nadie llega hasta Azrak sin enfrentarse conmigo». Aren se prepara: deberá vencer al centinela para continuar.'],
+    ['La forja de los nombres', 'forja', 'La luz de Lume devolvió las fuerzas a Aren. En la forja descubre que Shadow la llevó a la Cámara del Eclipse por haberlo rescatado. Azrak debilitó allí el Cristal de la Unión. Aren promete encontrarla.'],
+    ['Los cuatro juramentos', 'forja', 'Los guardianes responden a los cristales. Para abrirles un camino, Aren debe devolver cada símbolo a su sello: bosque, desierto, cielo e invierno.', 'sellos-azrak'],
+    ['Una orden imposible', 'forja', 'Azrak ordena a Shadow destruir el puente, aunque sus propios centinelas sigan cruzándolo. Shadow vacila. Aren comprende que bajo esa armadura todavía queda una voluntad propia.'],
+    ['Luz entre las sombras', 'forja', 'Aren reconoce a la guardiana que lo salvó. «Lume, vine por vos». Azrak ha creado una copia engañosa de su cámara. Siete detalles traicionan la ilusión: encontrarlos romperá las ataduras de Lume.', 'eclipse-azrak'],
+    ['El camino de los guardianes', 'entrada', 'Lume conserva el quinto cristal, aunque Azrak debilitó su luz. «Con cada palabra que recuperes podré encender un portal y llamar a los guardianes». Cuatro palabras despertarán los caminos del bosque, el desierto, el cielo y el invierno.'],
+    ['Antes del último umbral', 'trono', 'Aren avanza solo hacia el trono. Lume se queda con el quinto cristal, sosteniendo los cuatro portales para traer a los guardianes. Shadow espera en la puerta. «Le juré lealtad», dice. Aren responde: «Todavía podés elegir a quién proteger».'],
+    ['La última palabra', 'trono', 'Shadow desenvaina frente al trono de Azrak. Primero habrá que vencer al centinela. Detrás de él espera quien encadenó a los cuatro mundos.'],
+  ].map(([title, background, text, puzzle], index) => ({
+    capitulo: `Misión ${index + 1}`, titulo: title, texto: text,
+    fondos: [`reino-azrak/${[
+      'entrada', 'puente-runas', 'torre-centinela', 'forja', 'sala-juramentos',
+      'balcon-orden', 'camara-eclipse', 'sendero-guardianes-apagado', 'ultimo-umbral', 'trono',
+    ][index]}-v1.png`], puzzle: puzzle || '',
+  }));
+  const words = (typeof module === 'object' && module.exports
+    ? require('./word-banks-es.js')
+    : globalThis.SpanishWordBanks).azrak;
+  const symbols = ['Hoja', 'Sol', 'Nube', 'Copo de nieve'];
+  const oathSymbolsImage = 'assets/images/ui/juramentos-medallones-v1.png';
+  function mountScene(container, mission, completed = 0) {
+    container.querySelectorAll('.vida-azrak').forEach(element => element.remove());
+    container.dataset.misionAzrak = mission < 0 ? '' : String(mission + 1);
+    if (mission < 0) return;
+    const layer = document.createElement('div');
+    layer.className = 'vida-azrak';
+    const addImage = (parent, src, className, alt = '') => {
+      const img = document.createElement('img');
+      img.src = src; img.className = className; img.alt = alt;
+      parent.append(img); return img;
+    };
+    if (mission === 7) mountPortals(layer, completed);
+    if ([6, 7].includes(mission)) {
+      const lume = document.createElement('figure');
+      lume.className = `lume-azrak ${mission === 6 ? 'lume-cautiva' : 'lume-libre'}`;
+      addImage(lume, sprites + 'guardian-alba-base.png', 'lume-figura', 'Lume, guardiana del Cristal de la Unión');
+      if (mission === 7) {
+        addImage(lume, sprites + 'lume-invoca-portales-v1.png', 'lume-gesto', '');
+        addImage(lume, 'assets/images/elements/cristal-celeste-v1.png', 'cristal-union-lume', 'Quinto cristal');
+      }
+      const label = document.createElement('figcaption');
+      label.textContent = mission === 6 ? 'Lume · Atrapada en el eclipse' : 'Lume · Guardiana de la Unión';
+      lume.append(label); layer.append(lume);
+    }
+    const count = mission === 0 ? 1 : mission === 5 ? 10 : 0;
+    for (let index = 0; index < count; index++) {
+      const creature = document.createElement('div');
+      creature.className = `demonio-azrak demonio-vuelo${mission === 5 ? ' demonio-lejano' : ''}`;
+      creature.style.setProperty('--demora', `${mission === 5 ? -11 + index * .38 : -3}s`);
+      creature.style.setProperty('--altura', `${mission === 5 ? 14 + (index % 4) * 1.7 : 12}%`);
+      creature.style.setProperty('--tamano-lejano', `${1.5 + (index % 3) * .25}%`);
+      creature.style.setProperty('--posicion-reducida', `${28 + index * 4}%`);
+      creature.setAttribute('aria-hidden', 'true');
+      ['demonio-volador-v1.png', 'demonio-volador-alas-bajas-v1.png'].forEach((file, frame) =>
+        addImage(creature, 'assets/images/ambiente/reino-azrak/' + file, `demonio-cuadro cuadro-${frame}`));
+      layer.append(creature);
+    }
+    container.append(layer);
+  }
+  const portalNames = ['Bosque', 'Desierto', 'Cielo', 'Invierno'];
+  const portalShapes = [[285, 414, 103, 142], [595, 447, 74, 110], [1077, 459, 72, 99], [1398, 445, 74, 113]];
+  function mountPortals(layer, completed) {
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('viewBox', '0 0 1672 941');
+    svg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+    svg.classList.add('portales-lume');
+    svg.setAttribute('aria-hidden', 'true');
+    const defs = document.createElementNS(ns, 'defs'); svg.append(defs);
+    portalShapes.forEach(([cx, cy, rx, ry], i) => {
+      const clip = document.createElementNS(ns, 'clipPath'); clip.id = `portal-lume-${i}`;
+      const ellipse = document.createElementNS(ns, 'ellipse');
+      for (const [key, value] of Object.entries({ cx, cy, rx, ry })) ellipse.setAttribute(key, value);
+      clip.append(ellipse); defs.append(clip);
+      const light = document.createElementNS(ns, 'image');
+      light.setAttribute('href', base + 'sendero-guardianes-v1.png');
+      light.setAttribute('width', '1672'); light.setAttribute('height', '941');
+      light.setAttribute('clip-path', `url(#portal-lume-${i})`);
+      light.classList.add('portal-lume');
+      light.classList.toggle('encendido', i < completed);
+      svg.append(light);
+    });
+    const beam = document.createElementNS(ns, 'path');
+    beam.classList.add('rayo-lume'); svg.append(beam);
+    layer.append(svg);
+    const status = document.createElement('p'); status.className = 'estado-portales-lume';
+    status.setAttribute('aria-live', 'polite');
+    status.textContent = `Portales encendidos: ${Math.min(completed, 4)}/4`;
+    layer.append(status);
+  }
+  async function ignitePortal(container, index, reduced = false) {
+    const layer = container.querySelector('.vida-azrak');
+    const portals = layer?.querySelectorAll('.portal-lume');
+    if (!portals?.[index] || layer.dataset.invocando === 'true') return;
+    layer.dataset.invocando = 'true';
+    const lume = layer.querySelector('.lume-azrak');
+    lume?.classList.toggle('invocacion-reducida', reduced);
+    lume?.classList.add('invocando');
+    // El rayo nace del cristal una vez que termina de elevarse.
+    if (!reduced) await new Promise(resolve => setTimeout(resolve, 650));
+    if (!layer.isConnected) return;
+    const beam = layer.querySelector('.rayo-lume');
+    const [x, y] = portalShapes[index];
+    const svg = layer.querySelector('svg');
+    const crystal = layer.querySelector('.cristal-union-lume').getBoundingClientRect();
+    const point = svg.createSVGPoint();
+    point.x = crystal.x + crystal.width / 2; point.y = crystal.y + crystal.height / 2;
+    const start = point.matrixTransform(svg.getScreenCTM().inverse());
+    beam.setAttribute('d', `M ${start.x} ${start.y} Q 880 580 ${x} ${y}`);
+    beam.classList.add('activo');
+    portals[index].classList.add('encendido');
+    layer.querySelector('.estado-portales-lume').textContent = index === 3
+      ? '«Seguí, Aren. Yo sostendré los portales hasta que lleguen los guardianes»'
+      : `Lume llama al ${portalNames[index]} · ${index + 1}/4`;
+    await new Promise(resolve => setTimeout(resolve, reduced ? 900 : 1600));
+    if (!layer.isConnected) return;
+    beam.classList.remove('activo'); lume?.classList.remove('invocando');
+    if (!reduced) await new Promise(resolve => setTimeout(resolve, 450));
+    delete layer.dataset.invocando;
+  }
+  const hiddenRunes = [
+    { name: 'Hoja', x: 134, y: 188, size: 80, clue: 'Entre las piedras y las hojas del muro izquierdo.' },
+    { name: 'Sol', x: 1368, y: 269, size: 88, clue: 'Revisá el escudo junto a la pequeña sombra.' },
+    { name: 'Nube', x: 730, y: 572, size: 84, clue: 'Buscá entre las vasijas del centro.' },
+    { name: 'Copo de nieve', x: 167, y: 853, size: 100, clue: 'Entre los escombros de la esquina inferior izquierda.' },
+    { name: 'Estrella', x: 1360, y: 853, size: 100, clue: 'Las cadenas de la derecha rodean una piedra especial.' },
+  ];
+  const hiddenRunesImage = base + 'puente-runas-ocultas-v2.png';
+
+  function mountHiddenRunes(container, board, message, makeButton, finish, sound, record) {
+    let closed = false, zoom = 1, dragged = false;
+    const found = new Set(), pointers = new Map();
+    board.className = 'runas-visor'; board.tabIndex = 0;
+    board.setAttribute('aria-label', 'Escena del puente. Ampliá y arrastrá para buscar las cinco runas.');
+    const scene = document.createElement('div'); scene.className = 'runas-escena';
+    const picture = document.createElement('img'); picture.src = hiddenRunesImage;
+    picture.alt = 'Ruinas del puente con escudos, vasijas, escombros y cadenas. Hay cinco medallones escondidos.';
+    picture.draggable = false;
+    scene.append(picture); board.append(scene);
+    const targets = document.createElement('ul'); targets.className = 'runas-objetivos';
+    targets.setAttribute('aria-label', 'Runas por encontrar');
+    container.append(targets);
+    const status = () => { message.textContent = `Runas encontradas: ${found.size}/5 · Tocá los medallones en la escena.`; };
+    hiddenRunes.forEach((rune, index) => {
+      const item = document.createElement('li');
+      // Use the actual illustrated medallion as the search reference, without a second raster asset.
+      const preview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      preview.setAttribute('viewBox', `${rune.x-rune.size/2} ${rune.y-rune.size/2} ${rune.size} ${rune.size}`);
+      preview.setAttribute('aria-hidden', 'true');
+      const crop = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      crop.setAttribute('href', hiddenRunesImage); crop.setAttribute('width', '1536'); crop.setAttribute('height', '1024');
+      preview.append(crop);
+      const label = document.createElement('span'); label.textContent = rune.name;
+      item.append(preview, label); targets.append(item);
+      const button = makeButton('', () => {
+        if (closed || dragged || found.has(index)) return;
+        record('runes',{op:'find',index});
+        found.add(index); sound('acertar'); button.classList.add('encontrada'); button.setAttribute('aria-pressed', 'true');
+        button.setAttribute('aria-label', `${rune.name}, encontrada`); button.textContent = '✓';
+        item.classList.add('encontrada'); label.textContent = `✓ ${rune.name}`; status();
+        if (found.size === hiddenRunes.length) finish();
+      }, scene);
+      button.className = 'runa-oculta';
+      button.style.left = `${rune.x/1536*100}%`; button.style.top = `${rune.y/1024*100}%`;
+      button.style.width = `${rune.size/1536*100}%`; button.style.height = `${rune.size/1024*100}%`;
+      button.setAttribute('aria-label', `Runa ${rune.name}`); button.setAttribute('aria-pressed', 'false');
+    });
+    const controls = document.createElement('div'); controls.className = 'runas-controles'; container.append(controls);
+    const changeZoom = (next, anchorX = board.clientWidth/2, anchorY = board.clientHeight/2) => {
+      if (closed) return;
+      const before = zoom; zoom = Math.max(1, Math.min(3, next));
+      scene.style.width = `${zoom*100}%`;
+      board.scrollLeft = (board.scrollLeft+anchorX)*zoom/before-anchorX;
+      board.scrollTop = (board.scrollTop+anchorY)*zoom/before-anchorY;
+      minus.disabled = zoom <= 1; plus.disabled = zoom >= 3;
+      reset.textContent = `Vista completa · ${Math.round(zoom*100)}%`;
+    };
+    const minus = makeButton('− Alejar', () => changeZoom(zoom-.5), controls);
+    const plus = makeButton('+ Ampliar', () => changeZoom(zoom+.5), controls);
+    const reset = makeButton('Vista completa · 100%', () => { changeZoom(1); board.scrollTo(0,0); }, controls);
+    makeButton('Una pista', () => {
+      const next = hiddenRunes.find((_, index) => !found.has(index));
+      if (next) message.textContent = `${found.size}/5 · ${next.name}: ${next.clue}`;
+    }, controls);
+    minus.disabled = true;
+    board.addEventListener('pointerdown', event => {
+      if (closed || (event.pointerType === 'mouse' && event.button !== 0)) return;
+      if (!pointers.size) dragged = false;
+      pointers.set(event.pointerId, { x:event.clientX, y:event.clientY, startX:event.clientX, startY:event.clientY });
+      // Capture on the original target so a tap still clicks that rune.
+      event.target.setPointerCapture(event.pointerId);
+    });
+    board.addEventListener('pointermove', event => {
+      const old = pointers.get(event.pointerId); if (!old || closed) return;
+      const other = [...pointers.entries()].find(([id]) => id !== event.pointerId)?.[1];
+      if (other) {
+        const before = Math.hypot(old.x-other.x,old.y-other.y);
+        const after = Math.hypot(event.clientX-other.x,event.clientY-other.y);
+        const rect = board.getBoundingClientRect();
+        if (before > 0) changeZoom(zoom*after/before, (event.clientX+other.x)/2-rect.left, (event.clientY+other.y)/2-rect.top);
+        dragged = true;
+      } else if (Math.hypot(event.clientX-old.startX,event.clientY-old.startY)>6 || dragged) {
+        board.scrollLeft -= event.clientX-old.x; board.scrollTop -= event.clientY-old.y; dragged = true;
+      }
+      old.x=event.clientX; old.y=event.clientY;
+    });
+    const endPointer = event => pointers.delete(event.pointerId);
+    board.addEventListener('pointerup', endPointer); board.addEventListener('pointercancel', endPointer);
+    board.addEventListener('lostpointercapture', endPointer);
+    board.addEventListener('keydown', () => { dragged = false; });
+    picture.addEventListener('error', () => { if (!closed) message.textContent = 'No se pudo cargar la escena. Reiniciá el puzzle para volver a intentarlo.'; });
+    status();
+    return () => { closed = true; pointers.clear(); };
+  }
+  function toggleLight(board, index) {
+    const next = [...board];
+    for (const candidate of [index, index - 3, index + 3, ...(index % 3 ? [index - 1] : []), ...(index % 3 < 2 ? [index + 1] : [])]) {
+      if (candidate >= 0 && candidate < 9) next[candidate] = !next[candidate];
+    }
+    return next;
+  }
+  function initialLights() {
+    return [0, 4, 8, 2].reduce(toggleLight, Array(9).fill(false));
+  }
+  function sealsSolved(values) { return values.every((value, index) => value === [2, 0, 3, 1][index]); }
+
+  const differenceArt = {
+    original: 'assets/images/puzzles/lume-camara-verdadera-v1.png',
+    altered: 'assets/images/puzzles/lume-camara-alterada-v1.png',
+  };
+  const chamberDifferences = [
+    { x:95, y:67, w:110, h:115, name:'La luna del medallón', clue:'Compará los adornos de la pared superior izquierda.' },
+    { x:1308, y:123, w:62, h:66, name:'El cristal de la lámpara', clue:'La luz que cuelga arriba a la derecha oculta un cambio.' },
+    { x:65, y:276, w:49, h:109, name:'La botella del estante', clue:'Revisá los objetos de la estantería izquierda.' },
+    { x:1364, y:270, w:100, h:103, name:'La estrella del escudo', clue:'Observá la decoración de la pared derecha.' },
+    { x:171, y:710, w:41, h:55, name:'La cinta del libro', clue:'Compará con atención el libro de la esquina inferior izquierda.' },
+    { x:666, y:824, w:182, h:105, name:'El triángulo del suelo', clue:'Hay una diferencia en los dibujos del piso.' },
+    { x:1380, y:627, w:65, h:112, name:'El asa del jarrón', clue:'Observá la silueta de la vasija de la derecha.' },
+  ];
+  function chamberDifferenceAt(x, y, found = new Set()) {
+    return chamberDifferences.findIndex((d, i) => !found.has(i) && x >= d.x-12 && x <= d.x+d.w+12 && y >= d.y-12 && y <= d.y+d.h+12);
+  }
+  function mountChamberDifferences(container, board, message, makeButton, finish, sound, requestHint, record) {
+    let closed = false, ready = false, zoom = 1, hintPending = false;
+    const found = new Set(), hinted = new Set(), views = [], scenes = [];
+    board.className = 'camara-diferencias';
+    const intro = document.createElement('p'); intro.className = 'camara-relato';
+    intro.textContent = 'Azrak alteró siete detalles de la cámara. Compará las dos versiones para romper las ataduras de Lume.';
+    container.prepend(intro);
+    const discoveries = document.createElement('p'); discoveries.className = 'camara-hallazgos'; container.append(discoveries);
+    const status = text => { message.textContent = `${found.size}/7 diferencias · ${text || 'Tocá el detalle distinto en cualquiera de las imágenes.'}`; };
+    function mark(index) {
+      if (closed || !ready || index < 0 || found.has(index)) return;
+      found.add(index); sound('acertar');
+      const d = chamberDifferences[index];
+      record('differences',{op:'mark',x:d.x+d.w/2,y:d.y+d.h/2});
+      scenes.forEach(scene => {
+        const ring = document.createElement('span'); ring.className = 'diferencia-encontrada'; ring.textContent = '✓'; ring.setAttribute('aria-hidden','true');
+        ring.style.cssText = `left:${(d.x+d.w/2)/1536*100}%;top:${(d.y+d.h/2)/1024*100}%;width:${(d.w+26)/1536*100}%;height:${(d.h+26)/1024*100}%;`;
+        scene.append(ring);
+      });
+      discoveries.textContent = [...found].map(i=>chamberDifferences[i].name).join(' · ');
+      status();
+      if (found.size === 7) { ready = false; finish(); message.textContent = '¡Encontraste las siete diferencias! La ilusión se rompe y Lume queda libre.'; }
+    }
+    ['Cámara verdadera', 'Ilusión de Azrak'].forEach((title, side) => {
+      const figure = document.createElement('figure'); const caption = document.createElement('figcaption'); caption.textContent = title;
+      const view = document.createElement('div'); view.className = 'camara-visor'; view.tabIndex = 0;
+      view.setAttribute('role','group'); view.setAttribute('aria-label',`${title}. Arrastrá para explorar al ampliar. Con teclado: flechas para mover el cursor y Enter para marcar.`);
+      const scene = document.createElement('div'); scene.className = 'camara-escena';
+      const img = document.createElement('img'); img.src = differenceArt.original; img.alt = 'Lume cautiva entre dos columnas, con estantes, lámparas, un libro, un jarrón y un suelo grabado.'; img.draggable = false; scene.append(img);
+      if (side) chamberDifferences.forEach(d => {
+        // Reuse every pixel of the original except these seven bounded illustrated patches.
+        const patch = document.createElement('span'); patch.className = 'camara-alteracion'; patch.setAttribute('aria-hidden','true');
+        patch.style.cssText = `left:${d.x/1536*100}%;top:${d.y/1024*100}%;width:${d.w/1536*100}%;height:${d.h/1024*100}%;`;
+        const altered = document.createElement('img'); altered.src = differenceArt.altered; altered.alt = ''; altered.draggable = false;
+        altered.style.cssText = `width:${1536/d.w*100}%;height:${1024/d.h*100}%;left:${-d.x/d.w*100}%;top:${-d.y/d.h*100}%;`;
+        patch.append(altered); scene.append(patch);
+      });
+      const cursor = document.createElement('span'); cursor.className = 'camara-cursor'; cursor.hidden = true; cursor.setAttribute('aria-hidden','true'); scene.append(cursor);
+      let cx=768, cy=512, pointer=null, moved=false;
+      view.addEventListener('keydown', event => {
+        if (!ready || closed) return;
+        const step=event.shiftKey?12:40;
+        if (event.key==='Enter' || event.key===' ') { event.preventDefault(); mark(chamberDifferenceAt(cx,cy,found)); return; }
+        if (!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(event.key)) return;
+        event.preventDefault(); cursor.hidden=false;
+        cx=Math.max(0,Math.min(1536,cx+(event.key==='ArrowRight'?step:event.key==='ArrowLeft'?-step:0)));
+        cy=Math.max(0,Math.min(1024,cy+(event.key==='ArrowDown'?step:event.key==='ArrowUp'?-step:0)));
+        cursor.style.left=`${cx/1536*100}%`; cursor.style.top=`${cy/1024*100}%`;
+        view.scrollLeft=cx/1536*scene.clientWidth-view.clientWidth/2; view.scrollTop=cy/1024*scene.clientHeight-view.clientHeight/2;
+      });
+      view.addEventListener('pointerdown', event => {
+        if (event.button!==0 || !ready || closed) return;
+        pointer={id:event.pointerId,x:event.clientX,y:event.clientY,left:view.scrollLeft,top:view.scrollTop}; moved=false; view.setPointerCapture(event.pointerId);
+      });
+      view.addEventListener('pointermove', event => {
+        if (!pointer || pointer.id!==event.pointerId) return;
+        const dx=event.clientX-pointer.x, dy=event.clientY-pointer.y;
+        if (Math.hypot(dx,dy)>8) moved=true;
+        if (moved) { view.scrollLeft=pointer.left-dx; view.scrollTop=pointer.top-dy; }
+      });
+      view.addEventListener('pointerup', event => {
+        if (!pointer || pointer.id!==event.pointerId) return;
+        pointer=null;
+        if (moved || closed || !ready) return;
+        const r=scene.getBoundingClientRect(); const index=chamberDifferenceAt((event.clientX-r.left)/r.width*1536,(event.clientY-r.top)/r.height*1024,found);
+        if (index<0) status('Ese detalle no suma una diferencia nueva. Seguí comparando.'); else mark(index);
+      });
+      view.addEventListener('pointercancel',()=>{pointer=null;});
+      view.addEventListener('scroll',()=>{
+        if(closed)return;
+        const other=views[1-side];if(!other)return;
+        if(Math.abs(other.scrollLeft-view.scrollLeft)>1)other.scrollLeft=view.scrollLeft;
+        if(Math.abs(other.scrollTop-view.scrollTop)>1)other.scrollTop=view.scrollTop;
+      });
+      views.push(view);scenes.push(scene);view.append(scene);figure.append(caption,view);board.append(figure);
+    });
+    const controls=document.createElement('div');controls.className='camara-controles';container.append(controls);
+    const changeZoom=next=>{
+      const x=(views[0].scrollLeft+views[0].clientWidth/2)/scenes[0].clientWidth;
+      const y=(views[0].scrollTop+views[0].clientHeight/2)/scenes[0].clientHeight;
+      zoom=Math.max(1,Math.min(3,next));scenes.forEach(s=>s.style.width=`${zoom*100}%`);
+      views.forEach(v=>{v.scrollLeft=x*scenes[0].clientWidth-v.clientWidth/2;v.scrollTop=y*scenes[0].clientHeight-v.clientHeight/2;});
+      minus.disabled=zoom===1;plus.disabled=zoom===3;reset.textContent=`Vista completa · ${zoom}×`;
+    };
+    const minus=makeButton('− Alejar',()=>changeZoom(zoom-.5),controls);
+    const plus=makeButton('+ Ampliar',()=>changeZoom(zoom+.5),controls);
+    const reset=makeButton('Vista completa · 1×',()=>changeZoom(1),controls);minus.disabled=true;
+    const hint=makeButton(requestHint?'Ver anuncio para una pista':'Una pista',async()=>{
+      if(!ready||hintPending)return;
+      hintPending=true;hint.disabled=true;
+      try {
+        // The future rewarded-ad adapter must resolve true ONLY after a reward is earned.
+        const earned=requestHint?await requestHint({puzzle:'eclipse-azrak'}):true;
+        if(closed||!ready)return;
+        if(earned!==true){status('No se obtuvo la pista. Podés seguir buscando.');return;}
+        const index=chamberDifferences.findIndex((_,i)=>!found.has(i)&&!hinted.has(i));
+        const next=index<0?chamberDifferences.findIndex((_,i)=>!found.has(i)):index;
+        hinted.add(next);status(chamberDifferences[next].clue);
+      } catch {if(!closed&&ready)status('La pista no está disponible ahora. Podés seguir buscando.');}
+      finally {hintPending=false;if(!closed&&ready)hint.disabled=false;}
+    },controls);
+    message.textContent='Preparando las dos cámaras…';board.classList.add('cargando');
+    Promise.all([...board.querySelectorAll('img')].map(img=>img.decode())).then(()=>{
+      if(closed)return;ready=true;board.classList.remove('cargando');status();
+    }).catch(()=>{if(!closed)message.textContent='No se pudieron cargar las cámaras. Reiniciá el puzzle para reintentar.';});
+    return ()=>{closed=true;ready=false;};
+  }
+
+  // Each puzzle owns its timers. Closing or restarting invalidates the old board.
+  function mountPuzzle(container, type, complete, { sound = () => {}, requestHint = null, record = () => {} } = {}) {
+    let disposed = false, busy = false;
+    const timers = new Set();
+    const later = (fn, delay) => {
+      const id = setTimeout(() => { timers.delete(id); if (!disposed) fn(); }, delay);
+      timers.add(id);
+    };
+    container.replaceChildren();
+    container.className = 'puzzle-cumbres puzzle-azrak';
+    container.setAttribute('role', 'group');
+    container.setAttribute('aria-label', 'Puzzle del Reino de Azrak');
+    const message = document.createElement('p');
+    message.className = 'azrak-puzzle-status'; message.setAttribute('aria-live', 'polite');
+    const board = document.createElement('div'); board.className = 'azrak-puzzle-board';
+    container.append(message, board);
+    const makeButton = (label, action, parent = board) => {
+      const button = document.createElement('button'); button.type = 'button'; button.textContent = label;
+      button.addEventListener('click', () => { if (!disposed && !busy) action(button); });
+      parent.append(button); return button;
+    };
+    const finish = () => {
+      if (busy || disposed) return;
+      busy = true; message.textContent = '¡El camino está abierto!';
+      container.querySelectorAll('button').forEach(button => { button.disabled = true; });
+      later(complete, 650);
+    };
+    let closeRunes = () => {};
+    if (type === 'runas-azrak') {
+      closeRunes = mountHiddenRunes(container, board, message, makeButton, finish, sound, record);
+    } else if (type === 'sellos-azrak') {
+      const values = [0, 1, 2, 3];
+      board.classList.add('tablero-juramentos');
+      ['Norte', 'Este', 'Sur', 'Oeste'].forEach((direction, index) => {
+        const button = makeButton('', () => {
+          record('oaths',{op:'rotate',index});
+          values[index] = (values[index] + 1) % symbols.length;
+          renderSymbol();
+        });
+        button.className = 'sello-juramento';
+        const heading = document.createElement('strong'); heading.textContent = direction;
+        const frame = document.createElement('span'); frame.className = 'juramento-medallon';
+        frame.setAttribute('aria-hidden', 'true');
+        const image = document.createElement('img'); image.src = oathSymbolsImage;
+        image.alt = ''; image.draggable = false; frame.append(image);
+        const label = document.createElement('span'); label.className = 'juramento-simbolo';
+        button.append(heading, frame, label);
+        function renderSymbol() {
+          const value = values[index];
+          image.style.left = `${-(value % 2) * 100}%`;
+          image.style.top = `${-Math.floor(value / 2) * 100}%`;
+          label.textContent = symbols[value];
+          button.setAttribute('aria-label', `${direction}: ${symbols[value]}. Cambiar símbolo`);
+        }
+        renderSymbol();
+      });
+      const clues = document.createElement('p'); clues.className = 'azrak-puzzle-clues';
+      clues.textContent = 'El cielo guía al norte. El bosque recibe el amanecer al este. El invierno espera al sur. El sol descansa al oeste.';
+      container.prepend(clues);
+      makeButton('Abrir los cuatro sellos', () => {
+        record('oaths',{op:'check'});
+        if (sealsSolved(values)) finish();
+        else message.textContent = 'Todavía hay símbolos fuera de lugar. Leé las cuatro pistas.';
+      }, container);
+      message.textContent = 'Tocá cada sello para cambiar su símbolo. Después comprobá el orden.';
+    } else if (type === 'eclipse-azrak') {
+      closeRunes = mountChamberDifferences(container, board, message, makeButton, finish, sound, requestHint, record);
+    }
+    return () => { disposed = true; closeRunes(); timers.forEach(clearTimeout); timers.clear(); };
+  }
+
+  const shadowEncounter = [
+    { image:'primer-shadow-aren-herido-v1.png', title:'Un contraataque inesperado', text:'Aren gana el duelo. Pero Shadow se incorpora y libera una descarga que el explorador no alcanza a esquivar. Aren cae malherido. «Esto todavía no terminó», dice el centinela.' },
+    { image:'primer-shadow-lume-rescate-v1.png', title:'La quinta guardiana', text:'Una luz se interpone. «Soy Lume, la quinta guardiana, protectora del Cristal de la Unión». Su escudo detiene a Shadow mientras su magia comienza a sanar las heridas de Aren.' },
+    { image:'primer-shadow-lume-rescate-v1.png', title:'Todavía podés continuar', text:'«Mi luz te devolverá las fuerzas. Cruzá el portal, Aren. Yo lo contendré». Lume lo ayuda a ponerse a salvo. «Volveré por vos», promete él antes de atravesar la luz.' },
+    { image:'primer-shadow-lume-capturada-v1.png', title:'El precio del rescate', text:'El portal se cierra. Agotada por el rescate, Lume no consigue evitar las ataduras de Shadow. El centinela la lleva a la Cámara del Eclipse. Allí, por orden de Azrak, el Quinto Sello debilita su cristal.' },
+  ];
+  function shadowEncounterState(world, mission, saved) {
+    if (world > 4 || (world === 4 && mission > 2)) return 'completo';
+    return ['rescate','completo'].includes(saved) ? saved : 'pendiente';
+  }
+
+  const actor = (id, file, x, y, size, motion = '') => ({ id, file, x, y, size, motion });
+  const aren = (x = 17, y = 72, motion = '') => actor('aren', 'explorador-base.png', x, y, 23, motion);
+  const azrak = (motion = '', file = 'azrak-base.png') => actor('azrak', file, 77, 73, 49, motion);
+  const shadow = (x = 35, motion = '', file = 't-shadow-base.png') => actor('shadow', file, x, 72, 34, motion);
+  const team = () => [aren(12), actor('guardiana', '../coleccion/guardiana-bosque-base.png', 26, 73, 27), actor('zafir', 'mago-base.png', 40, 73, 29), actor('nivor', 'dragon-hielo-base.png', 57, 75, 38), actor('nimbus', 'dragon-base.png', 72, 73, 23), shadow(87)];
+  const betrayal = [
+    { key: 'derrota-shadow', text: 'Shadow cae de rodillas. Aren baja su arma: «No tenés que seguir obedeciéndolo».', actors: [aren(), shadow(48, 'arrodillado', 't-shadow-impacto.png'), azrak()] },
+    { key: 'traicion', text: '«Ya no me servís», sentencia Azrak. Una descarga alcanza a Shadow y abre una grieta bajo sus pies.', actors: [aren(), shadow(45, 'desvanecer', 't-shadow-impacto.png'), azrak('', 'azrak-ataque.png')], effect: 'traicion' },
+    { key: 'ausencia', text: 'La grieta se cierra entre humo violeta. No queda rastro de Shadow. Aren se interpone: «Se terminó, Azrak».', actors: [aren(25), azrak()], effect: 'bruma' },
+    { key: 'burla-azrak', image: 'ausencia-v1.png', text: 'Azrak se ríe: «¿Vos vas a detenerme? Un simple humano, sin alas ni magia propia. No tenés ninguna posibilidad».', actors: [aren(25), azrak()], duration: 8500 },
+    { key: 'aren-decide', image: 'ausencia-v1.png', focus: '25% 65%', text: 'Aren da un paso al frente: «Voy a seguir adelante por los que quiero y por este mundo. Si me derribás, voy a volver a levantarme».', actors: [aren(25), azrak()], duration: 10000 },
+  ];
+  const finale = [
+    { key: 'resiste', text: 'El duelo está ganado, pero Azrak absorbe la energía del trono. Los guardianes atraviesan el portal: esta vez, Aren no luchará solo.', actors: [aren(), actor('guardiana', '../coleccion/guardiana-bosque-base.png', 31, 74, 30), actor('zafir', 'mago-base.png', 43, 73, 29), azrak()], effect: 'portal' },
+    { key: 'emboscada-cancerbero', text: 'Un rugido sacude el trono. El cancerbero de Azrak se alza sobre los guardianes, enorme como una torre. Sus tres cabezas lanzan llamaradas y Aren apenas alcanza a levantar su espada.', actors: [aren(), actor('guardiana', '../coleccion/guardiana-bosque-base.png', 31, 74, 30)], duration: 8500 },
+    { key: 'portal-nivor', text: 'Antes de que el fuego los alcance, un rayo de hielo surge del portal que Lume mantiene abierto. Dos garras gigantes se aferran a la piedra. ¡Nivor ha respondido a la llamada!', actors: [actor('nivor', 'dragon-hielo-ataque-v2.png', 30, 75, 60)], duration: 8500 },
+    { key: 'titanes', text: 'Nivor emerge del portal frente al cancerbero. Fuego y hielo chocan por encima de los guardianes. El dragón avanza entre el vapor y levanta una muralla de hielo que contiene a la bestia.', actors: [actor('nivor', 'dragon-hielo-ataque-v2.png', 30, 75, 60)], duration: 9500 },
+    { key: 'rescate', text: 'Azrak lanza un ataque hacia Aren mientras Nivor contiene al cancerbero. Nimbus se arroja entre ambos y lo recoge al vuelo. Por un instante, el tiempo parece detenerse.', actors: [azrak('', 'azrak-ataque.png')], effect: 'rescate', duration: 8500 },
+    { key: 'madre', text: 'Otra descarga corta el cielo. Aeralis se interpone: su aliento luminoso choca con el ataque de Azrak y protege a su hijo y a Aren.', actors: [actor('aeralis', '../aventura/aeralis-liberada-v1.png', 27, 57, 58), azrak('', 'azrak-ataque.png')], effect: 'choque' },
+    { key: 'victoria-nivor', text: 'Nivor apaga las últimas llamaradas y encierra al cancerbero en una enorme prisión de hielo. Las tres cabezas se inclinan: la bestia ha sido vencida. Ahora el dragón vuelve su mirada hacia Azrak.', actors: [actor('nivor', 'dragon-hielo-ataque-v2.png', 30, 75, 60)], duration: 8500, effect: 'hielo' },
+    { key: 'hielo', text: 'Con el cancerbero vencido y atrapado en hielo, Nivor congela los pies de Azrak y sujeta su brazo al suelo. «No volverás a encadenar a mi familia».', actors: [actor('nivor', 'dragon-hielo-ataque-v2.png', 26, 73, 49), azrak('sacudida', 'azrak-impacto.png')], effect: 'hielo' },
+    { key: 'guardianes', text: 'La Guardiana enlaza sus raíces con la magia de Zafir. El Guardián de la Luna corta las sombras y Lume, la guardiana que Aren liberó del eclipse, abre una brecha de luz en la defensa de Azrak.', actors: [actor('guardiana', '../coleccion/guardiana-bosque-ataque-raices.png', 13, 76, 30), actor('zafir', 'mago-ataque.png', 31, 73, 30), actor('luna', 'hombre-lobo-zarpazo.png', 47, 76, 34), actor('alume', 'guardian-alba-final-carga-sin-rayo.png', 55, 55, 30), azrak('sacudida')], effect: 'guardianes' },
+    { key: 'contraataque', text: 'Azrak se sobrepone. Quiebra las raíces y extiende una ola oscura sobre la arena. Los guardianes retroceden; Aren apenas logra mantenerse en pie.', actors: [aren(17, 76, 'sacudida'), actor('guardiana', 'guardiana-susto-impacto.png', 34, 77, 28), azrak('', 'azrak-invocacion-portal.png')], effect: 'onda' },
+    { key: 'regreso', text: 'Una sombra intercepta el golpe. Shadow reaparece: usó la grieta para escapar. Azrak extiende la mano, pero su antiguo centinela se vuelve hacia Aren.', actors: [aren(), shadow(47, 'aparecer'), azrak()], effect: 'bruma' },
+    { key: 'eleccion', image: 'eleccion-v2.png', text: '«Mi juramento ya no te pertenece. Yo elijo a quién proteger». Shadow abre un paso dentro de la tormenta e invita a los guardianes a reunir su poder.', actors: [aren(), shadow(43, '', 't-shadow-ataque.png'), azrak()], effect: 'portal' },
+    { key: 'union', image: 'union-v2.png', text: 'Hielo, cielo, bosque, sol, luna y sombra se unen. Aren alza los cuatro cristales y Lume suma la luz del quinto desde el portal. Juntos alcanzan el corazón del Quinto Sello y rompen el poder de Azrak.', actors: [aren(12), actor('guardiana', '../coleccion/guardiana-bosque-ataque-raices.png', 26, 76, 27), actor('zafir', 'mago-ataque.png', 38, 73, 26), shadow(51, '', 't-shadow-ataque.png'), azrak('derrota', 'azrak-impacto.png')], effect: 'union', duration: 8500 },
+    { key: 'amanecer', text: 'La tormenta se apaga. Azrak queda encerrado en el sello que pretendía dominar. Lume llega con el Cristal de la Unión, que recupera toda su luz al romperse el Quinto Sello, y se lo entrega a Aren. Los cinco cristales restauran los caminos entre mundos, y Shadow permanece junto a quienes eligió proteger.', actors: team(), effect: 'amanecer' },
+    { key: 'epilogo', text: 'Aren guarda su mapa. No fue una sola fuerza la que salvó los mundos: fue aprender a escucharse y elegir ayudarse. FIN · Gracias por vivir esta aventura.', actors: team(), effect: 'amanecer', duration: 9000 },
+  ];
+
+  // Batalla original, MusicLFiles desde el inicio y restauración.
+  const finalMusic = {
+    battle: { src: 'assets/sounds/victoria-mundo5.mp3', duration: 130951.813, readingScale: 1.35, loop: false, nivorCue: 17000 },
+    ending: { src: 'assets/sounds/azrak-batalla-final-musiclfiles.mp3', duration: 134896.313, fadeIn: 500, smileCue: 10000, fadeOut: 4500 },
+    peace: { src: 'assets/sounds/azrak-es-vencido.mp3', duration: 183864 },
+  };
+  const gifts = [
+    ['guardiana', 'La Guardiana del Bosque', '../coleccion/guardiana-bosque-ataque-raices.png', 'La vida del bosque te acompaña, Aren.', '#8fd36b'],
+    ['zafir', 'Zafir', 'mago-ataque.png', 'Mi magia será tuya. Confiá en lo que aprendiste.', '#bd86ff'],
+    ['luna', 'El Guardián de la Luna', 'hombre-lobo-zarpazo.png', 'Llevá mi fuerza. No vamos a dejarte solo.', '#cad9ff'],
+    ['nivor', 'Nivor', 'dragon-hielo-ataque-v2.png', 'Por mi familia y por quienes esperan despertar.', '#92e5ff'],
+    ['nimbus', 'Nimbus', 'dragon-base.png', '¡Vamos, Aren! Volvamos a abrir el cielo.', '#70ccff'],
+    ['aeralis', 'Aeralis', '../aventura/aeralis-liberada-v1.png', 'Que nuestra luz proteja tu camino.', '#96bbff'],
+    ['lume', 'Lume', '../versus/guardian-alba-final-carga-sin-rayo.png', 'El quinto cristal responde. Recibí la luz de la Unión.', '#ffe79a'],
+    ['shadow', 'Shadow', 't-shadow-ataque.png', 'Esta vez, mi poder sirve para proteger.', '#b49cff'],
+  ].map(([key, name, file, text, color]) => ({ key: 'energia-' + key, name, text, portrait: true, color, actors: [actor(key, file, 50, 86, 76)], duration: 3800 }));
+  finale.splice(finale.findIndex(shot => shot.key === 'union'), 3,
+    ...gifts,
+    { key: 'azrak-interrumpe', music: 'ending', image: 'azrak-interrumpe-union-v1.png', text: '«¡No lo permitiré!» Azrak lanza una descarga hacia el grupo. Si los alcanza ahora, la unión quedará incompleta.', actors: [azrak()], duration: 10000 },
+    { key: 'calamo-llegada', image: 'calamo-sonrisa-detalle-v1.png', text: 'Una sonrisa segura bajo la máscara. «Perdón por llegar tarde».', actors: [], duration: 5000 },
+    { key: 'calamo-barrera', image: 'calamo-barrera-tinta-v1.png', text: 'La descarga choca contra una barrera de tinta. «Esta vez no vine a robarte nada, Aren. ¡Terminá lo que empezaste!»', actors: [actor('calamo', 'kalamo-base.png', 50, 80, 65)], duration: 5500 },
+    { key: 'calamo-contiene', image: 'calamo-contiene-azrak-v1.png', text: 'Cálamo sujeta los brazos de Azrak con cintas de tinta. «¡No voy a contenerlo para siempre!» Los guardianes aprovechan esos segundos.', actors: [actor('calamo', 'kalamo-base.png', 30, 80, 55), azrak()], duration: 5500 },
+    { key: 'union', image: 'energia-unida-v1.png', text: 'Los guardianes entregan su energía. Los cinco cristales la reúnen alrededor de Aren: todos confían en él.', actors: team(), duration: 6500 },
+    { key: 'transformacion', image: 'aren-transformacion-v2.png', text: 'La luz transforma a Aren. Su corazón sigue siendo el mismo; ahora lleva la fuerza de todos los mundos.', actors: [aren(50)], duration: 6500 },
+    { key: 'ataque-union', image: 'aren-ataque-union-v1.png', text: '«¡Por todos los que nos esperan!» Aren concentra el poder recibido y lo dirige al corazón del Quinto Sello.', actors: [aren(), azrak()], duration: 6500 },
+    { key: 'sellado-inicio', image: 'sellado-inicio-v1.png', text: 'El cristal trepa por las piernas de Azrak. «¡No! ¿Cómo pudieron quebrar mi poder?», grita, intentando liberarse.', actors: [azrak()], duration: 5000 },
+    { key: 'azrak-vencido', image: 'sellado-avanza-v1.png', text: 'El sello alcanza sus hombros. «¡Yo dominaba estos mundos! ¿Cómo pude perder contra ustedes?» Su voz comienza a apagarse.', actors: [azrak()], duration: 5000 },
+    { key: 'amanecer', music: 'peace', image: 'amanecer-v2.png', text: 'El silencio deja paso a la esperanza. Los guardianes rodean a Aren y reúnen los cinco cristales, por fin a salvo.', actors: team(), duration: 13000 },
+    { key: 'aren-normal', image: 'aren-normalidad-v2.png', text: 'La armadura de luz se disuelve en pequeñas chispas. Aren vuelve a ser el explorador de siempre. Sus amigos lo reciben con orgullo.', actors: team(), duration: 13000 },
+    { key: 'restaurar-caminos', image: 'amanecer-v2.png', focus: '50% 70%', zoom: 1.12, text: 'Aren acerca sus manos a los cristales. Con la ayuda de los guardianes, envía su luz por los portales hacia cada mundo.', actors: team(), duration: 13000 },
+    { key: 'deshielo', image: 'restauracion-hielo-v1.png', text: 'En el reino de Nivor, el hielo que aprisionaba a sus habitantes comienza a ceder. La luz de Aren recorre sus calles.', actors: team(), duration: 14000 },
+    { key: 'reencuentro-hielo', image: 'restauracion-hielo-v1.png', focus: '38% 68%', zoom: 1.16, text: 'Las personas congeladas despiertan y vuelven a abrazarse. El reino conserva su nieve, pero el frío ya no les roba la vida.', actors: team(), duration: 14000 },
+    { key: 'bosque-renace', image: 'restauracion-bosque-v1.png', text: 'Las sombras abandonan el Bosque Encantado. Las raíces se abren, los árboles recuperan sus hojas y el agua vuelve a correr.', actors: team(), duration: 14000 },
+    { key: 'vida-bosque', image: 'restauracion-bosque-v1.png', focus: '60% 65%', zoom: 1.14, text: 'Los animales salen de sus escondites. Donde antes había miedo, ahora crecen flores. El bosque vuelve a respirar en paz.', actors: team(), duration: 13000 },
+    { key: 'desierto-renace', image: 'restauracion-desierto-v1.png', text: 'En el desierto, la tormenta se disipa. El oasis recupera sus aguas y los antiguos caminos vuelven a unir a sus habitantes.', actors: team(), duration: 14000 },
+    { key: 'agua-desierto', image: 'restauracion-desierto-v1.png', focus: '42% 70%', zoom: 1.14, text: 'Bajo las palmeras renacen los jardines. El desierto sigue siendo dorado, pero vuelve a ser un hogar lleno de vida.', actors: team(), duration: 13000 },
+    { key: 'cumbres-renacen', image: 'restauracion-cumbres-v1.png', text: 'Las nubes oscuras se separan. Los puentes de las Cumbres Celestes brillan otra vez y el viento vuelve a sostener sus islas.', actors: team(), duration: 14000 },
+    { key: 'cielo-libre', image: 'restauracion-cumbres-v1.png', focus: '60% 35%', zoom: 1.12, text: 'Nimbus y Aeralis vuelan juntos sobre un cielo libre. Los caminos entre mundos quedan abiertos para todos.', actors: team(), duration: 13000 },
+    { key: 'abrazo', image: 'abrazo-shadow-orgulloso-v2.png', text: 'Los guardianes abrazan a Aren. Apartado, Shadow observa con los brazos cruzados y una sonrisa discreta: a su manera, también celebra.', actors: team(), duration: 17000 },
+    { key: 'epilogo', image: 'epilogo-v1.png', text: 'Aren guarda su mapa. La aventura les enseñó que ningún poder es más grande que ayudarse. FIN · Gracias por salvar los mundos.', actors: team(), duration: 18000 },
+  );
+  const battleCaptions = {
+    resiste: 'Azrak absorbe la energía del trono. Los guardianes llegan: Aren ya no está solo.',
+    'emboscada-cancerbero': 'El cancerbero de Azrak se alza como una torre. Sus tres cabezas lanzan fuego contra los guardianes.',
+    'portal-nivor': 'Lume sostiene el portal. Dos garras de hielo atraviesan la luz: ¡Nivor ha respondido!',
+    titanes: 'Fuego y hielo chocan. Nivor levanta una muralla que contiene al cancerbero.',
+    rescate: 'Azrak apunta hacia Aren. Nimbus lo recoge al vuelo y lo aleja del golpe.',
+    madre: 'Aeralis protege a su hijo y a Aren. Su aliento luminoso detiene el ataque.',
+    'victoria-nivor': 'Nivor encierra al cancerbero en hielo. La bestia ha sido vencida.',
+    hielo: 'El dragón inmoviliza a Azrak. «No volverás a encadenar a mi familia».',
+    guardianes: 'Raíces, magia, luna y luz abren una brecha. Los guardianes luchan juntos.',
+    contraataque: 'Azrak rompe sus ataduras. Una ola oscura obliga a todos a retroceder.',
+    regreso: 'Shadow reaparece y detiene el golpe. Ya no obedece a Azrak.',
+    eleccion: '«Yo elijo a quién proteger». Shadow invita a los guardianes a reunir su poder.',
+  };
+  for (const shot of finale) {
+    if (battleCaptions[shot.key]) { shot.text = battleCaptions[shot.key]; shot.duration = 5500; }
+  }
+  finale[0].music = 'battle';
+  finale.splice(finale.findIndex(shot => shot.key === 'amanecer'), 0,
+    { key: 'sello-cerrado', image: 'azrak-sellado-v2.png', text: '«Porque aprendimos a ayudarnos», responde Aren. El sello se cierra. Azrak ya no puede hacerles daño.', actors: [], duration: 4000 },
+    { key: 'silencio', intertitle: true, text: 'Por un instante, los cinco mundos guardaron silencio.\nDespués de tanta oscuridad, la vida volvió a encontrar su camino.', actors: [], duration: 6500 });
+
+  function planFinale(battleDuration = finalMusic.battle.duration, peaceDuration = finalMusic.peace.duration, endingDuration = finalMusic.ending.duration) {
+    const peaceIndex = finale.findIndex(shot => shot.music === 'peace');
+    const cueIndex = finale.findIndex(shot => shot.key === 'portal-nivor');
+    const endingIndex = finale.findIndex(shot => shot.music === 'ending');
+    const weights = finale.slice(peaceIndex).reduce((sum, shot) => sum + shot.duration, 0);
+    const durations = finale.map((shot, i) => shot.intertitle || shot.silent ? shot.duration : i < cueIndex
+      ? finalMusic.battle.nivorCue / cueIndex
+      : i < peaceIndex ? shot.duration * finalMusic.battle.readingScale
+      : shot.duration * peaceDuration / weights);
+    // Preserve the established first movement. Only Shadow's last hold meets the audio ending.
+    const shadowIndex = finale.findIndex(shot => shot.key === 'energia-shadow');
+    const beforeShadow = durations.slice(0, shadowIndex).reduce((sum, ms) => sum + ms, 0);
+    durations[shadowIndex] = Math.max(1, battleDuration - beforeShadow);
+    durations[endingIndex] = finalMusic.ending.smileCue;
+    const battleTotal = durations.slice(0, peaceIndex).reduce((sum, ms, i) => sum + (finale[i].intertitle ? 0 : ms), 0);
+    const endingLength = durations.slice(endingIndex, peaceIndex).reduce((sum, ms, i) => sum + (finale[endingIndex + i].intertitle ? 0 : ms), 0);
+    const endingStart = 0;
+    return { durations, battleTotal, battleDuration, endingDuration, endingStart, endingLength };
+
+  }
+
+  function endingVolume(elapsed, length) {
+    const fadeIn = Math.min(1, Math.max(0, elapsed) / finalMusic.ending.fadeIn);
+    const fadeOut = Math.min(1, Math.max(0, length - elapsed) / finalMusic.ending.fadeOut);
+    return .65 * Math.min(fadeIn, fadeOut);
+  }
+
+  function setupCinemaLandscape(layer, enabled, onChange) {
+    const mobile = enabled && matchMedia('(pointer: coarse)').matches && Math.min(innerWidth, innerHeight) <= 900;
+    const navigation = layer.querySelector('nav');
+    const fullscreen = document.createElement('button');
+    fullscreen.type = 'button'; fullscreen.textContent = 'Pantalla completa';
+    fullscreen.hidden = !mobile || !layer.requestFullscreen;
+    navigation.append(fullscreen);
+    const guide = document.createElement('div');
+    guide.className = 'azrak-rotate-guide'; guide.hidden = true;
+    guide.innerHTML = '<div><span aria-hidden="true">↻</span><h2>Girá el celular</h2><p>El final se ve mejor en horizontal. La historia te espera.</p><button type="button" data-view="landscape">Ver en horizontal</button><button type="button" data-view="portrait">Ver en vertical</button></div>';
+    layer.append(guide);
+    layer.classList.toggle('cinema-mobile', mobile);
+    const orientation = globalThis.screen?.orientation;
+    const previousOrientation = orientation?.type?.startsWith('landscape') ? 'landscape' : 'portrait';
+    let closed = false, allowPortrait = false, requesting = false;
+    const state = { waiting: false, destroy };
+    const restoreOrientation = () => {
+      try { orientation?.unlock?.(); orientation?.lock?.(previousOrientation)?.catch(() => {}); } catch {}
+    };
+    const lockLandscape = async () => {
+      try { await orientation?.lock?.('landscape'); } catch { /* Manual rotation remains available. */ }
+      if (closed) restoreOrientation();
+    };
+    function update() {
+      if (closed) return;
+      const wasWaiting = state.waiting;
+      state.waiting = mobile && innerHeight > innerWidth && !allowPortrait;
+      guide.hidden = !state.waiting;
+      navigation.inert = state.waiting;
+      layer.classList.toggle('esperando-giro', state.waiting);
+      if (state.waiting && !wasWaiting) guide.querySelector('button').focus();
+      if (!state.waiting && wasWaiting) navigation.querySelector('button').focus();
+      onChange();
+    }
+    async function expand() {
+      if (closed || requesting) return;
+      requesting = true;
+      try {
+        if (!document.fullscreenElement && layer.requestFullscreen) {
+          try { await layer.requestFullscreen(); } catch { /* Browsers may require manual rotation. */ }
+        }
+        if (!closed) await lockLandscape();
+        if (closed && document.fullscreenElement === layer) await document.exitFullscreen?.().catch(() => {});
+      } finally { requesting = false; update(); }
+    }
+    fullscreen.onclick = expand;
+    guide.querySelector('[data-view="landscape"]').onclick = expand;
+    guide.querySelector('[data-view="portrait"]').onclick = () => { allowPortrait = true; update(); };
+    function destroy() {
+      closed = true;
+      window.removeEventListener('resize', update);
+      if (mobile) restoreOrientation();
+      if (document.fullscreenElement === layer) document.exitFullscreen?.().catch(() => {});
+    }
+    if (mobile) {
+      // Release the game's portrait lock before asking for landscape in an installed PWA.
+      try { orientation?.unlock?.(); } catch {}
+      void lockLandscape();
+      window.addEventListener('resize', update);
+    }
+    update();
+    return state;
+  }
+
+  async function playCinematic(kind, { reduced = false, sound = () => {} } = {}) {
+    const characterTheme = kind === 'traicion' ? globalThis.CharacterMusic?.startScene('azrak') : null;
+    const shots = kind === 'traicion' ? betrayal : finale;
+    // Load the rescue and every stage of the seal before their scheduled appearance.
+    const landmarkImages = kind === 'final' ? ['portal-nivor-v1.png', 'azrak-interrumpe-union-v1.png', 'calamo-sonrisa-detalle-v1.png', 'calamo-barrera-tinta-v1.png', 'calamo-contiene-azrak-v1.png', 'sellado-inicio-v1.png', 'sellado-avanza-v1.png', 'azrak-sellado-v2.png'].map(file => {
+      const image = new Image();
+      image.src = `assets/images/cinematicas/reino-azrak/${file}`;
+      return image;
+    }) : [];
+    const layer = document.createElement('section'); layer.className = 'cinematica-azrak';
+    layer.setAttribute('role', 'dialog'); layer.setAttribute('aria-modal', 'true');
+    layer.setAttribute('aria-label', kind === 'traicion' ? 'La traición de Azrak' : 'El último juramento');
+    layer.innerHTML = '<div class="azrak-cinema-stage"></div><div class="azrak-cinema-caption"><span></span><p aria-live="polite"></p></div><nav><button type="button">Pausar</button><button type="button" class="azrak-music-toggle">Silenciar</button><button type="button">Saltar cinemática</button></nav>';
+    document.body.append(layer);
+    const oldOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const stage = layer.querySelector('.azrak-cinema-stage');
+    const [pause, mute, skip] = layer.querySelectorAll('button');
+    const focusBefore = document.activeElement;
+    let skipped = false, paused = false, currentTrack = null, muted = false, musicReady = false, closed = false;
+    let musicAction = 'mute';
+    const showMusicAction = (activate) => {
+      musicAction = activate ? 'activate' : 'mute';
+      mute.textContent = activate ? 'Activar música' : 'Silenciar';
+    };
+    let viewing = { waiting: false, destroy() {} };
+    const controlsSuspended = () => paused || document.hidden || viewing.waiting;
+    const musicWaiting = () => Boolean(currentTrack && !muted && !musicReady);
+    const suspended = () => controlsSuspended() || musicWaiting();
+    const musicNotice = document.createElement('div'); musicNotice.className = 'azrak-music-notice'; musicNotice.hidden = true;
+    musicNotice.innerHTML = '<p role="status">Preparando la música…</p><button type="button">Activar música</button><button type="button">Continuar sin música</button>';
+    layer.append(musicNotice);
+    const [retryMusic, withoutMusic] = musicNotice.querySelectorAll('button');
+    const musicStatus = musicNotice.querySelector('p');
+    const updateMusicState = () => {
+      if (closed) return;
+      characterTheme?.pause(controlsSuspended() || muted);
+      musicNotice.hidden = !musicWaiting() || viewing.waiting;
+      layer.classList.toggle('pausada', suspended());
+    };
+
+    const tracks = kind === 'final' ? Object.fromEntries(Object.entries(finalMusic).map(([key, spec]) => {
+      const audio = GameAudio.create(spec.src, 'music'); audio.preload = 'auto'; audio.volume = .65; audio.loop = Boolean(spec.loop);
+      audio.addEventListener('playing', () => {
+        if (closed || currentTrack !== audio) return;
+        musicReady = true; showMusicAction(muted); updateMusicState();
+      });
+      audio.addEventListener('waiting', () => {
+        if (closed || currentTrack !== audio) return;
+        musicReady = false; musicStatus.textContent = 'Preparando la música…'; updateMusicState();
+      });
+      audio.addEventListener('error', () => {
+        if (closed || currentTrack !== audio) return;
+        musicReady = false; musicStatus.textContent = 'No se pudo cargar la música. Podés reintentar o continuar sin ella.'; updateMusicState();
+      });
+      return [key, audio];
+    })) : {};
+    mute.hidden = kind !== 'final';
+    const playMusic = () => {
+      const audio = currentTrack;
+      if (!audio || closed) return;
+      audio.play().catch(error => {
+        if (closed || currentTrack !== audio || controlsSuspended() || error.name === 'AbortError') return;
+        musicReady = false; showMusicAction(true);
+        musicStatus.textContent = error.name === 'NotAllowedError'
+          ? 'Tocá Activar música para comenzar con sonido.'
+          : 'No se pudo reproducir la música. Podés reintentar o continuar sin ella.';
+        updateMusicState();
+      });
+    };
+    const syncPause = () => {
+      if (controlsSuspended() && currentTrack) musicReady = false;
+      updateMusicState();
+      if (controlsSuspended()) currentTrack?.pause();
+      else if (currentTrack) playMusic();
+    };
+    retryMusic.onclick = () => {
+      muted = false; musicReady = false;
+      Object.values(tracks).forEach(audio => { audio.muted = false; });
+      if (currentTrack?.error) currentTrack.load();
+      musicStatus.textContent = 'Preparando la música…';
+      if (!controlsSuspended()) playMusic();
+      updateMusicState();
+    };
+    withoutMusic.onclick = () => {
+      muted = true;
+      Object.values(tracks).forEach(audio => { audio.muted = true; });
+      showMusicAction(true); updateMusicState();
+    };
+    mute.onclick = () => {
+      muted = musicAction === 'activate' ? false : !muted;
+      Object.values(tracks).forEach(audio => { audio.muted = muted; });
+      showMusicAction(muted);
+      updateMusicState();
+      if (!controlsSuspended()) playMusic();
+    };
+    const onKey = event => {
+      if (event.key === 'Escape') { skipped = true; event.preventDefault(); }
+      if (event.key === 'Tab') {
+        event.preventDefault();
+        const buttons = [...layer.querySelectorAll(viewing.waiting ? '.azrak-rotate-guide button' : 'button')].filter(button => !button.hidden && button.getClientRects().length);
+        const at = buttons.indexOf(document.activeElement);
+        buttons[(at + (event.shiftKey ? buttons.length - 1 : 1)) % buttons.length].focus();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    document.addEventListener('visibilitychange', syncPause);
+    pause.onclick = () => { paused = !paused; syncPause(); pause.textContent = paused ? 'Continuar' : 'Pausar'; };
+    skip.onclick = () => { skipped = true; };
+    skip.focus();
+    viewing = setupCinemaLandscape(layer, kind === 'final', syncPause);
+    syncPause();
+    try {
+      // The metadata is optional: playback remains usable offline or if an audio fails.
+      await Promise.all(Object.values(tracks).map(audio => new Promise(resolve => {
+        let timer;
+        const done = () => { clearTimeout(timer); audio.removeEventListener('loadedmetadata', done); audio.removeEventListener('error', done); resolve(); };
+        if (audio.readyState >= 1 || audio.error) { resolve(); return; }
+        audio.addEventListener('loadedmetadata', done); audio.addEventListener('error', done);
+        timer = setTimeout(done, 2500);
+      })));
+      const trackDuration = key => Number.isFinite(tracks[key]?.duration) && tracks[key].duration > 0 ? tracks[key].duration * 1000 : finalMusic[key].duration;
+      const timing = kind === 'final' ? planFinale(trackDuration('battle'), trackDuration('peace'), trackDuration('ending')) : null;
+      let phase = null, phaseStart = 0, phaseOffset = 0;
+      for (const [index, shot] of shots.entries()) {
+        if (skipped) break;
+        if (shot.intertitle || shot.silent) { currentTrack?.pause(); currentTrack = null; phase = null; updateMusicState(); }
+        if (shot.music) {
+          phase = shot.music;
+          phaseOffset = phase === 'ending' ? timing.endingStart : 0;
+          phaseStart = timing ? timing.durations.slice(0, index).reduce((sum, ms) => sum + ms, 0) : 0;
+          currentTrack?.pause();
+          currentTrack = tracks[phase];
+          musicReady = false; musicStatus.textContent = 'Preparando la música…';
+          if (currentTrack) { currentTrack.currentTime = phaseOffset / 1000; currentTrack.volume = phase === 'ending' ? 0 : .65; if (!controlsSuspended()) playMusic(); }
+          updateMusicState();
+          // A track must actually start before its first scene, unless the player chooses silence.
+          while (suspended() && !skipped) await new Promise(resolve => setTimeout(resolve, 100));
+          if (skipped) break;
+        }
+        const duration = timing ? timing.durations[index] : (shot.duration || 7200);
+        layer.dataset.shot = shot.key;
+        layer.classList.toggle('interludio-silencioso', Boolean(shot.intertitle));
+        stage.className = 'azrak-cinema-stage escena-ilustrada';
+        stage.replaceChildren();
+        layer.querySelector('.azrak-cinema-caption span').textContent = `${kind === 'traicion' ? 'LA TRAICIÓN' : 'EL ÚLTIMO JURAMENTO'} · ${index + 1}/${shots.length}`;
+        layer.querySelector('.azrak-cinema-caption p').textContent = shot.text;
+        stage.style.setProperty('--plano-duracion', `${duration}ms`);
+        stage.style.setProperty('--plano-zoom', String(shot.zoom || 1.055));
+        stage.style.setProperty('--plano-foco', shot.focus || '50% 50%');
+        const illustration = document.createElement('img');
+        illustration.className = 'azrak-cinema-illustration';
+        if (!shot.portrait && !shot.intertitle) illustration.src = `assets/images/cinematicas/reino-azrak/${shot.image || shot.key + '-v1.png'}`;
+        illustration.alt = shot.text;
+        if (!shot.portrait && !shot.intertitle) stage.append(illustration);
+        illustration.onerror = () => {
+        if (!illustration.isConnected) return;
+        illustration.remove();
+        stage.className = `azrak-cinema-stage efecto-${shot.effect || 'ninguno'}`;
+        for (const a of shot.actors) {
+          const img = document.createElement('img'); img.src = sprites + a.file; img.alt = a.id;
+          img.className = `azrak-cinema-actor actor-${a.id} ${a.motion}`;
+          img.style.cssText = `--x:${a.x}%;--y:${a.y}%;--size:${a.size}%;`;
+          stage.append(img);
+        }
+        const effect = document.createElement('div'); effect.className = 'azrak-cinema-effect'; effect.setAttribute('aria-hidden', 'true'); stage.append(effect);
+        if (shot.effect === 'rescate') {
+          const rescue = document.createElement('div'); rescue.className = 'azrak-rescate';
+          rescue.innerHTML = `<img class="rescate-nimbus" src="${sprites}dragon-base.png" alt="Nimbus volando"><img class="rescate-aren" src="${sprites}explorador-base.png" alt="Aren a salvo sobre Nimbus">`;
+          stage.append(rescue);
+        }
+        };
+        if (shot.portrait) {
+          stage.className = 'azrak-cinema-stage entrega-guardian';
+          stage.style.setProperty('--energia-guardian', shot.color);
+          const portrait = document.createElement('img');
+          portrait.className = 'retrato-entrega'; portrait.src = sprites + shot.actors[0].file; portrait.alt = shot.name;
+          const energy = document.createElement('div'); energy.className = 'energia-entrega'; energy.setAttribute('aria-hidden', 'true');
+          const name = document.createElement('strong'); name.className = 'nombre-entrega'; name.textContent = shot.name;
+          stage.append(energy, portrait, name);
+        }
+        if (!shot.intertitle && !shot.silent) sound(shot.key === 'amanecer' ? 'victoria' : 'habilidad');
+        // The readable duration remains intact for reduced motion; only movement changes.
+        layer.classList.toggle('movimiento-reducido', reduced);
+        let elapsed = 0;
+        while (elapsed < duration && !skipped) {
+          const before = performance.now();
+          await new Promise(resolve => setTimeout(resolve, Math.max(1, Math.min(100, duration - elapsed))));
+          if (!suspended()) {
+            const delta = performance.now() - before;
+            elapsed += delta;
+            if (timing && currentTrack) {
+              const shotStart = timing.durations.slice(0, index).reduce((sum, ms) => sum + ms, 0);
+              // Only an explicit choice to continue without music permits the wall clock fallback.
+              if (!currentTrack.paused && !currentTrack.ended && currentTrack.readyState >= 2 && !currentTrack.seeking) {
+                const shotStart = timing.durations.slice(0, index).reduce((sum, ms) => sum + ms, 0);
+                elapsed = Math.max(0, currentTrack.currentTime * 1000 - phaseOffset + phaseStart - shotStart);
+              }
+              if (phase === 'ending') {
+                const endingElapsed = Math.max(0, shotStart + elapsed - phaseStart);
+                currentTrack.volume = endingVolume(endingElapsed, timing.endingLength);
+              }
+            }
+          }
+        }
+      }
+    } finally {
+      closed = true;
+      characterTheme?.close();
+      viewing.destroy();
+      Object.values(tracks).forEach(audio => { audio.pause(); audio.currentTime = 0; audio.removeAttribute('src'); audio.load(); });
+      document.removeEventListener('keydown', onKey);
+      document.removeEventListener('visibilitychange', syncPause);
+      layer.remove();
+      document.body.style.overflow = oldOverflow;
+      if (focusBefore?.isConnected) focusBefore.focus({ preventScroll: true });
+    }
+  }
+  return { chamberDifferences, chamberDifferenceAt, differenceArt, missions, words, hiddenRunes, hiddenRunesImage, shadowEncounter, shadowEncounterState, symbols, toggleLight, initialLights, sealsSolved, mountPuzzle, mountScene, ignitePortal, playCinematic, planFinale, endingVolume, betrayal, finale, finalMusic, base };
+});
