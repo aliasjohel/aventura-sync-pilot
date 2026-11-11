@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "aventura-palabras-runtime-";
-const CACHE_NAME = `${CACHE_PREFIX}general-candidate-pwa-79589a54d5e6`;
+const CACHE_NAME = `${CACHE_PREFIX}general-candidate-pwa-a758c2b947d5`;
 const LEGACY_CACHE_NAMES = new Set([
   `${CACHE_PREFIX}v227`,
   `${CACHE_PREFIX}v226`,
@@ -1637,9 +1637,9 @@ const ASSET_REVISIONS = {
   "./assets/images/intro/conceptos/prologo-cuatro-escenas-v1.png": "sha256-2b209d5c4a3c1a14c1f6e8ce236fd4cbc9d0c8347fd842164fb3d3b623b11d7e",
   "./css/intro.css": "sha256-4a173ec8bd6ef5a6a992633d4ad33bece012b20554506c7745442cdc4eafa69f",
   "./js/intro.js": "sha256-275b86598cf9772595a2b3f905f5cf9704758f054b1354c09cdacef017a9c9ac",
-  "./js/supabase-loader.js": "sha256-52c182c9754dd44411a51a233d0cc4df4e9879d046f90b8af53e6cb939eac5ba",
+  "./js/supabase-loader.js": "sha256-643b337516766baa58672b44ee7288728faee86a9ba3bcc43eacbe05403e5c34",
   "./js/supabase-config.js": "sha256-305eac5a6b712731f4e372cca9f6a4f2af0610e772bd928eaa5e75fc0b427295",
-  "./js/supabase-client.js": "sha256-25fedbd5cf0ce2c70266f4e9c17ece167849bbe12abde0ec59d275d497153b4e",
+  "./js/supabase-client.js": "sha256-e9f84ddc6348c1668c2f2671c51c9c79d001c420717c0d4570046152bd879864",
   "./js/word-gameplay.js": "sha256-ed28310b7afcba7a3ce8391e8a26d23ec39ae19f710b99016de494c3dffe4913",
   "./js/versus-engine.js": "sha256-544297ccc805d3448fd1563053f6ebaba45483eef69e2d65ce045eb78282a9b4",
   "./js/arcade-rules.js": "sha256-688fe36bc763fe065665dfd305b6ea99efaf9aea2667a863f61b5cc257e521f6",
@@ -1649,7 +1649,7 @@ const ASSET_REVISIONS = {
   "./js/lessons-i18n.js": "sha256-1bb946ab742bf6ef2f929751ba8c9f953446148148f81917c980d399cce33904",
   "./js/multiplayer-i18n.js": "sha256-b4bbf6b3e88b3146b4165702492d4d2104557d3930cd4ee1f9610a170fc6d169",
   "./js/adventure-puzzles.js": "sha256-0172daaa9b58276982a9e2c7a1732e8f85a23be3e37f2872d7b5f73cbb939a5f",
-  "./js/app.js": "sha256-6d80f2476517c4ce8f947eca1ccc78751d29e59b5ed1f4a450436bccb2183e8c",
+  "./js/app.js": "sha256-5018e2aee5f5d936716c9a90964868f7e77fc144796b097319138ff6bb9f51a9",
   "./js/kairos-forest.js": "sha256-33d3e0c440834480046b45d1afe09855b14abdaa86bad36d4eb808e93d947e51",
   "./css/kairos-forest.css": "sha256-68643318666681d395edf4b99fcdca635640f68308d4f9658adf5c3e0f6b9269",
   "./assets/images/cinematicas/bosque-kairos/aparicion-v1.png": "sha256-219bb71f292b52e1ecd60f82bd70559d157331945d1c7ff1c23552cfb212da7d",
@@ -2002,11 +2002,11 @@ const ASSET_REVISIONS = {
   "./assets/images/personajes/coleccion/guardiana-bosque-victoria.png": "sha256-b25653f99fd7f9d6b5e6a7c6eb54edba6effbb7cfb28c5e54d295fb789500d35",
   "./assets/images/elementos/estela-escarcha-nivor.png": "sha256-6228167b96bd62744abee437c61cf7b6fa44cecb8eecb2f2268f8f4e0e6197ca",
   "./js/adventure-sync-v2.js": "sha256-debd499987ef6dc91141804d71bd55e38cebd1d2e891bd91343fda2fa01632e6",
-  "./js/adventure-account-v2.js": "sha256-2200cf03e57c7c60ed09560a9471f54a2353fdcfc3abed2215bbd51a585a78ec",
+  "./js/adventure-account-v2.js": "sha256-19a79345edf7fc56d90e7f92b91bc070ddb6aac80336f609f667bec5e66cd024",
   "./js/account-sync-v3.js": "sha256-49d7c91bec92c8db56f084f58fc2f95f1f85be82feff22237951c9038b274264",
-  "./js/account-runtime-v3.js": "sha256-052b112d33e8c2e18bffcac1de7045661c6dc84bcbb3d8d2ff8005b6c679cada",
+  "./js/account-runtime-v3.js": "sha256-66157c47b3c898975a9ca65f1092d894490faf678054fd4c617cdcf971bf580a",
   "./pilot-config.js": "sha256-4abfd7e96c671f22fb066d321ee9b96f237846d36a12f379220219e6d8539a44",
-  "./pilot-gate.js": "sha256-54f0a6c5697a107008fc15663b79f514adf8f122fe31755f5c75b5b49f31bb39"
+  "./pilot-gate.js": "sha256-fd53449c43b44149fa09237ecaaa40a49e9bf42aa964bbe4b2e2af55d665067b"
 };
 const LEGACY_RESOURCE_REVISIONS = {
   "./js/word-banks-es.js": "aventura-palabras-runtime-v347",
@@ -2254,7 +2254,6 @@ const LEGACY_RESOURCE_REVISIONS = {
   "./assets/images/elementos/ardilla-bosque-carrera-v1.png": "legacy-v93-v95",
   "./js/prologue-cinematic.js": "aventura-palabras-runtime-v347",
   "./assets/images/intro/conceptos/prologo-cuatro-escenas-v1.png": "legacy-v93-v95",
-  "./js/supabase-client.js": "aventura-palabras-runtime-v347",
   "./js/versus-room.js": "aventura-palabras-runtime-v347",
   "./js/adventure-puzzles.js": "aventura-palabras-runtime-v347",
   "./css/kairos-forest.css": "aventura-palabras-runtime-v347",

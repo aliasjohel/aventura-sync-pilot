@@ -1310,6 +1310,7 @@ let cancelarSuscripcionSalasVersus = adaptadorSalasVersus.suscribir(
 );
 
 async function asegurarConexionSalasVersus() {
+  if(!navigator.onLine)throw new Error("El multijugador necesita conexión a internet. Tu aventura descargada se conserva.");
   if (adaptadorSalasVersus.proveedor === "supabase") return adaptadorSalasVersus;
   if (promesaConexionSalasVersus) return promesaConexionSalasVersus;
 

@@ -25,17 +25,29 @@
  }
  function deadline(promise){let timer;return Promise.race([promise,new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('ADMISSION_TIMEOUT')),10000);})]).finally(()=>clearTimeout(timer));}
  function recheck(){generation++;show('Comprobando tu cuenta y la sincronización…');clearTimeout(scheduled);scheduled=setTimeout(()=>void check(),0);}
+ async function recuperarCopias(uid){
+  if(!globalThis.AccountRuntimeV3?.installed||!globalThis.AdventureAccountV2?.installed)return true;
+  globalThis.GameWallet.connect(client,uid);
+  await Promise.all([globalThis.AccountRuntimeV3.connect(client,uid),globalThis.AdventureAccountV2.connect(client,uid)]);
+  if(navigator.onLine)await Promise.all([globalThis.AccountRuntimeV3.refresh(),globalThis.AdventureAccountV2.refresh()]);
+  return globalThis.AccountRuntimeV3.state()?.userId===uid&&globalThis.AdventureAccountV2.state()?.userId===uid&&(!navigator.onLine||globalThis.AccountRuntimeV3.read()?.confirmed);
+ }
  async function check(){
   const ticket=++generation;show('Comprobando tu cuenta y la sincronización…');const current=()=>ticket===generation;
   try{
    await deadline(globalThis.AventuraOnline.cargarSupabase());if(!current())return;client=globalThis.AventuraSupabase.obtenerCliente();
-   if(!subscription&&client.auth.onAuthStateChange)subscription=client.auth.onAuthStateChange(()=>recheck());
-   const local=await deadline(client.auth.getSession());if(!current())return;
+   if(navigator.onLine&&!subscription&&client.auth.onAuthStateChange)subscription=client.auth.onAuthStateChange(()=>recheck());
+   const local=!navigator.onLine&&globalThis.AventuraSupabase.leerSesionLocal?globalThis.AventuraSupabase.leerSesionLocal():await deadline(client.auth.getSession());if(!current())return;
    const session=local.data?.session,uid=session?.user?.id;
    if(local.error||!uid){show('Ingresá con tu cuenta habitual. Esta candidata no crea cuentas nuevas.');return;}
    if(!general&&uid!==cfg.uuid){show('Esta candidata está limitada a la cuenta autorizada del piloto.');return;}
    if(general&&session.user.is_anonymous===true){remember(uid,false);show('Para recuperar tu progreso entre dispositivos, ingresá con tu cuenta verificada. No se crea un invitado nuevo.');return;}
-   if(!navigator.onLine){if(cached(uid))admit(uid,true);else show('Conectate una vez para verificar esta cuenta y su sincronización antes de usar su copia offline.');return;}
+   if(!navigator.onLine){
+    if(!cached(uid)){show('Conectate una vez para verificar esta cuenta y su sincronización antes de usar su copia offline.');return;}
+    const recovered=await recuperarCopias(uid);if(!current())return;
+    if(!recovered){show('No hay una copia local completa de esta cuenta. Reconectá para recuperarla sin borrar datos.');return;}
+    admit(uid,true);return;
+   }
    const verified=await deadline(client.auth.getUser());if(!current())return;const user=verified.data?.user;
    if(verified.error||user?.id!==uid||(general&&(user.is_anonymous===true||!(user.email_confirmed_at||user.phone_confirmed_at||user.confirmed_at)))){remember(uid,false);show('No pudimos verificar esta cuenta. Volvé a ingresar con tu cuenta habitual.');return;}
    const result=await deadline(client.rpc('account_state_v3'));if(!current())return;
@@ -44,6 +56,8 @@
    if(result.error){remember(uid,false);show('No pudimos consultar la sincronización. Tus datos se conservan; reconectá y volvé a intentar.');return;}
    const state=result.data;
    if(state?.userId!==uid||state.schemaVersion!==3||!state.enabled||(general&&state.adventureState?.userId!==uid)||!state.adventureState?.adventure?.enabled){remember(uid,false);show('La sincronización está suspendida o todavía no está activada para esta cuenta. Tus datos se conservan.');return;}
+   const recovered=await recuperarCopias(uid);if(!current())return;
+   if(!recovered){show('No pudimos recuperar la copia de esta cuenta. Reconectá y volvé a intentar sin borrar datos.');return;}
    remember(uid,true);admit(uid);
   }catch{if(current())show('No pudimos comprobar la sincronización. Reconectá y volvé a intentar; no borres tus datos.');}
  }

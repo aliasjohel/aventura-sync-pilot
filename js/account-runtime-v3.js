@@ -27,7 +27,7 @@
   ready=repo.load().then(()=>{hydrate();return state();}).catch(()=>{render();return null;});return ready;
  }
  async function wait(){if(!repo)await root.AventuraShop?.connect();await ready;if(!state()||!repo.read().confirmed)throw new root.AccountSyncV3.AccountError('unavailable');return state();}
- async function refresh(){await wait();await repo.reconcile();hydrate();return state();}
+ async function refresh(){if(!repo)await root.AventuraShop?.connect();await ready;if(!repo)throw new root.AccountSyncV3.AccountError('unavailable');if(navigator.onLine)await repo.reconcile();hydrate();return state();}
  async function command(action,payload){await wait();const result=await repo.command(action,payload);hydrate();return result;}
  function getFrames(){return repo?.read().confirmed||!navigator.onLine?state()?.frames||[]:[];}
  async function equipSkin(character,skin){await command('wallet_equip',{character,skin});return root.CosmeticStore.read();}
