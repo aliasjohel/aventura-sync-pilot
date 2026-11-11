@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "aventura-palabras-runtime-";
-const CACHE_NAME = `${CACHE_PREFIX}general-candidate-pwa-a758c2b947d5`;
+const CACHE_NAME = `${CACHE_PREFIX}v042-pwa-sync-recovery`;
 const LEGACY_CACHE_NAMES = new Set([
   `${CACHE_PREFIX}v227`,
   `${CACHE_PREFIX}v226`,
@@ -1071,6 +1071,7 @@ const RESOURCE_ASSETS = [
 RESOURCE_ASSETS.push(...["./js/adventure-sync-v2.js","./js/adventure-account-v2.js"]);
 RESOURCE_ASSETS.push("./js/account-sync-v3.js","./js/account-runtime-v3.js");
 RESOURCE_ASSETS.push("./pilot-config.js","./pilot-gate.js");
+RESOURCE_ASSETS.push("./css/sync-menu-layout.css");
 const CORE_ASSETS = RESOURCE_ASSETS.filter(path =>
   !/\.(?:png|webp|jpe?g|mp3|wav|ogg|mp4)$/i.test(path)
   || /assets\/images\/(?:intro\/(?:libro-intro-sin-cristal|cristal-icono)\.png|fondos\/menu-inicio-aventura\.png|ui\/menu-(?:logo-fantasia-v2|button-(?:adventure|modes|ranking|shop|settings)-v1)\.webp)/.test(path)
@@ -1236,7 +1237,7 @@ const ASSET_REVISIONS = {
   "./assets/images/ui/menu-button-ranking-v1.webp": "sha256-ab9244074004847b638ea796b9e7792176bdb9ee530b1679a1562047b01a83ab",
   "./assets/images/ui/menu-button-shop-v1.webp": "sha256-6e828e1a47cf7a4c97b635b00e4010d014f5ee5161668cd4bd35c2e19c55a1de",
   "./assets/images/ui/menu-button-settings-v1.webp": "sha256-a7dd3fd0d0105ae2032dde8f81ef3c5586b4f4648f93aa01dc7ae1c8aaa64c4f",
-  "./js/resource-catalog.js": "sha256-01cce7d33808c3b96ceaef4a2b32c1c8aa9f5ce36295c2f4976f128f54fd09b6",
+  "./js/resource-catalog.js": "sha256-641708ba3dfcb846f476bd55c4c6602623c85559ac495de432f6e37a8011fdec",
   "./js/resource-loader.js": "sha256-ed51b00161c62f3017b9459a3aa78797cdc3da62537d9325b1d45ebcf2aadf38",
   "./js/costume-resources.js": "sha256-88fe80b1b4728c8c9747c0c6cee4d03079b6c3d91881aa0af201a85096526c73",
   "./assets/images/perfil/miniaturas/azrak-base.webp": "sha256-226b633fadf0e7280ee7e712339a452c5699a603ead56f759ae5cbf1fbe30f01",
@@ -1547,8 +1548,8 @@ const ASSET_REVISIONS = {
   "./js/public-player-profile.js": "sha256-7d5baa433d26631235dbe3fff4a3d4a01b79935b6a02b7350eb3e371233fdaf9",
   "./js/match-likes.js": "sha256-a96befb24dac2e802f4e9318221e02488ef938400d8eead0b7278f8b160744d5",
   "./js/menu-wallet.js": "sha256-b6dfeea9d16dd67d4181b8c768c0b990a38332659d21bf17515aae2105745f9c",
-  "./": "sha256-c0f63e24e567182702ca92333de2c674b09e728474a303ee20c802205aa584e3",
-  "./index.html": "sha256-c0f63e24e567182702ca92333de2c674b09e728474a303ee20c802205aa584e3",
+  "./": "sha256-186d15deb6512665d965a77e21a8eaa51dc5b2cb3eaa2defe4a03dd5de9d1982",
+  "./index.html": "sha256-186d15deb6512665d965a77e21a8eaa51dc5b2cb3eaa2defe4a03dd5de9d1982",
   "./manifest.json": "sha256-ae9d76f88e38f99edcc93e0ac012b0340c8443f8fbdb71cbc36990f02688d758",
   "./css/styles.css": "sha256-8d8219adcb7d246b7804434713d4a4eefb738a952f529870ccd52a4283becf72",
   "./css/azrak-world.css": "sha256-97ad7046dc7eafa9e8caaee3e00b1cb27e6b6314b99642d49e6ffda4fa8fcfe2",
@@ -1649,7 +1650,7 @@ const ASSET_REVISIONS = {
   "./js/lessons-i18n.js": "sha256-1bb946ab742bf6ef2f929751ba8c9f953446148148f81917c980d399cce33904",
   "./js/multiplayer-i18n.js": "sha256-b4bbf6b3e88b3146b4165702492d4d2104557d3930cd4ee1f9610a170fc6d169",
   "./js/adventure-puzzles.js": "sha256-0172daaa9b58276982a9e2c7a1732e8f85a23be3e37f2872d7b5f73cbb939a5f",
-  "./js/app.js": "sha256-5018e2aee5f5d936716c9a90964868f7e77fc144796b097319138ff6bb9f51a9",
+  "./js/app.js": "sha256-0975fc78e1d356754f46df4493530097748eda2841f75c89d88cd0b8747b4cda",
   "./js/kairos-forest.js": "sha256-33d3e0c440834480046b45d1afe09855b14abdaa86bad36d4eb808e93d947e51",
   "./css/kairos-forest.css": "sha256-68643318666681d395edf4b99fcdca635640f68308d4f9658adf5c3e0f6b9269",
   "./assets/images/cinematicas/bosque-kairos/aparicion-v1.png": "sha256-219bb71f292b52e1ecd60f82bd70559d157331945d1c7ff1c23552cfb212da7d",
@@ -2001,12 +2002,13 @@ const ASSET_REVISIONS = {
   "./assets/images/personajes/coleccion/guardiana-bosque-ataque-raices.png": "sha256-4c303dae4cb53b3e0682d78dd172c58ee18b4c3bd05fc4f6b4046cb2939c2802",
   "./assets/images/personajes/coleccion/guardiana-bosque-victoria.png": "sha256-b25653f99fd7f9d6b5e6a7c6eb54edba6effbb7cfb28c5e54d295fb789500d35",
   "./assets/images/elementos/estela-escarcha-nivor.png": "sha256-6228167b96bd62744abee437c61cf7b6fa44cecb8eecb2f2268f8f4e0e6197ca",
-  "./js/adventure-sync-v2.js": "sha256-debd499987ef6dc91141804d71bd55e38cebd1d2e891bd91343fda2fa01632e6",
-  "./js/adventure-account-v2.js": "sha256-19a79345edf7fc56d90e7f92b91bc070ddb6aac80336f609f667bec5e66cd024",
+  "./js/adventure-sync-v2.js": "sha256-54d8f0cf924a0295b6b66d84e678fb1ee934110f959e5c69285ab8bc4a7fa139",
+  "./js/adventure-account-v2.js": "sha256-1be03fb544155a3acdbb88c182b6a7c3d829a21c3e3400da15b2301dc44407dc",
   "./js/account-sync-v3.js": "sha256-49d7c91bec92c8db56f084f58fc2f95f1f85be82feff22237951c9038b274264",
-  "./js/account-runtime-v3.js": "sha256-66157c47b3c898975a9ca65f1092d894490faf678054fd4c617cdcf971bf580a",
-  "./pilot-config.js": "sha256-4abfd7e96c671f22fb066d321ee9b96f237846d36a12f379220219e6d8539a44",
-  "./pilot-gate.js": "sha256-fd53449c43b44149fa09237ecaaa40a49e9bf42aa964bbe4b2e2af55d665067b"
+  "./js/account-runtime-v3.js": "sha256-fd0b353a8568f4cacce75964b6b3e2df96cb0358a9ac8b10167902dfb120ce35",
+  "./pilot-config.js": "sha256-ac020640245bf595c7c5e97ed9fcc8519d5eac045be3b52c4578b66347746a46",
+  "./pilot-gate.js": "sha256-f88ab9d35324530cd975ec39b572aad4e03f15b55f71ed4466cda8a459c23a3e",
+  "./css/sync-menu-layout.css": "sha256-8b5639da9724641e2d006400a0c2c3850cbfd9c643e09b4f9f92332f622c765f"
 };
 const LEGACY_RESOURCE_REVISIONS = {
   "./js/word-banks-es.js": "aventura-palabras-runtime-v347",
@@ -2254,6 +2256,7 @@ const LEGACY_RESOURCE_REVISIONS = {
   "./assets/images/elementos/ardilla-bosque-carrera-v1.png": "legacy-v93-v95",
   "./js/prologue-cinematic.js": "aventura-palabras-runtime-v347",
   "./assets/images/intro/conceptos/prologo-cuatro-escenas-v1.png": "legacy-v93-v95",
+  "./js/supabase-config.js": "aventura-palabras-runtime-v347",
   "./js/versus-room.js": "aventura-palabras-runtime-v347",
   "./js/adventure-puzzles.js": "aventura-palabras-runtime-v347",
   "./css/kairos-forest.css": "aventura-palabras-runtime-v347",

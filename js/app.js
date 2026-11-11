@@ -17767,6 +17767,14 @@ function aplicarProgresoCuentaV2(){
 window.addEventListener('adventure-account-ready',()=>{globalThis.AdventureOnline?.clear();aplicarProgresoCuentaV2();});
 window.addEventListener('adventure-account-cleared',()=>{globalThis.AdventureOnline?.clear();aplicarProgresoCuentaV2();});
 window.addEventListener('adventure-state-updated',()=>{actualizarDisponibilidadPersonajesVersus();actualizarEstadosRecompensaMapa();});
+// Reconciliation is distinct from per-letter updates: applying a checkpoint
+// during combat would reset transient gameplay. Refresh only an idle view.
+window.addEventListener('adventure-account-recovered',()=>{
+ if(!pantallaMenu.classList.contains('activa'))return;
+ aplicarProgresoCuentaV2();
+ if(document.getElementById('mapaAventura')?.open)void abrirMapaAventura();
+});
+
 
 window.addEventListener('account-state-updated',event=>{const s=AccountRuntimeV3.state();if(!s)return;progresoServidorTorre={userId:s.userId,managed:true,completed:Object.fromEntries(s.tower.progress.map(p=>[p.character,p.completed]))};if(!partidaOnlineIniciada&&!torreEnCurso&&!dueloAventuraActivo&&pantallaSeleccionPersonajeVersus.classList.contains('oculto')){const ch=s.preferences.selectedCharacter;if(ch&&personajesVersus[ch]&&personajeDisponibleVersus(ch))personajeJugadorVersus=ch;} });
 window.addEventListener('account-state-cleared',()=>{progresoServidorTorre=null;personajeJugadorVersus='explorador';torreAutoritativa?.stop();});

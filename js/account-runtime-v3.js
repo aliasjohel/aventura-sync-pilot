@@ -1,8 +1,8 @@
 (function(root){
  'use strict';
- let repo=null,owner=null,client=null,ready=Promise.resolve(),applied=false,applying=false,lastProjection=null;
+ let repo=null,owner=null,client=null,ready=Promise.resolve(),applied=false,applying=false,lastProjection=null,generation=0,connecting=false;
  const state=()=>repo?.read().state||null;
- function render(){if(!root.document)return;let box=document.getElementById('accountSyncState');if(!box){box=document.createElement('aside');box.id='accountSyncState';box.innerHTML='<p role="status" aria-live="polite"></p><button type="button">Recuperar cuenta</button><button type="button" data-collection>Conciliar colección verificada</button>';(document.getElementById('pantallaMenu')||document.body).append(box);box.querySelector('button').addEventListener('click',()=>void refresh().catch(()=>{}));box.querySelector('[data-collection]').addEventListener('click',()=>void command('reconcile_cosmetics',{}).catch(()=>{}));}const s=state(),pending=s?.tower.pendingRewards.length||0,legacy=s?.appearance&&!s.frames.includes(s.appearance.frame);box.querySelector('p').textContent=(repo?.read().message||root.AccountSyncV3.messages.signed_out)+(pending?' · '+pending+' victoria(s) de Torre pendientes: ingresá a Torre para recuperar su resultado.':'')+(legacy?' · Marco histórico conservado como referencia; no acredita un logro verificado.':'');box.querySelector('[data-collection]').hidden=!s?.enabled;box.querySelector('[data-collection]').disabled=!repo?.read().canWrite;}
+ function render(){if(!root.document)return;let box=document.getElementById('accountSyncState');if(!box){box=document.createElement('aside');box.id='accountSyncState';box.innerHTML='<h3>Sincronización de cuenta</h3><p role="status" aria-live="polite"></p><button type="button">Recuperar cuenta</button><button type="button" data-collection>Conciliar colección verificada</button>';(document.querySelector('#modalConfiguracion .panel-configuracion')||document.body).append(box);box.querySelector('button').addEventListener('click',()=>void refresh().catch(()=>{}));box.querySelector('[data-collection]').addEventListener('click',()=>void command('reconcile_cosmetics',{}).catch(()=>{}));}const s=state(),pending=s?.tower.pendingRewards.length||0,legacy=s?.appearance&&!s.frames.includes(s.appearance.frame);box.querySelector('p').textContent=(repo?.read().message||root.AccountSyncV3.messages.signed_out)+(pending?' · '+pending+' victoria(s) de Torre pendientes: ingresá a Torre para recuperar su resultado.':'')+(legacy?' · Marco histórico conservado como referencia; no acredita un logro verificado.':'');box.querySelector('[data-collection]').hidden=!s?.enabled;box.querySelector('[data-collection]').disabled=!repo?.read().canWrite;}
  function hydrate(){const r=repo?.read(),s=r?.state;if(!s||!r.confirmed&&navigator.onLine||owner!==root.CosmeticStore?.read().accountId){render();return;}const projection=JSON.stringify([r.confirmed,s.wallet,s.characters,s.backgrounds,s.xp,s.towerCosmetics,s.appearance,s.frames,s.preferences,s.profile,s.tower]);if(projection===lastProjection){render();return;}applying=true;
   try{
    const wallet=s.wallet||{userId:owner,securityVersion:3,currencyVersion:2,coins:0,owned:[],equipped:{},revision:0,missionClaims:[],world5Complete:false};
@@ -18,13 +18,15 @@
    root.dispatchEvent(new Event('wallet-updated'));
   }finally{applying=false;render();}
  }
- function connect(nextClient,id){if(repo&&client===nextClient&&owner===id)return ready;repo?.close();repo=null;owner=id||null;client=nextClient;applied=false;lastProjection=null;
+ function connect(nextClient,id){if((repo||connecting)&&client===nextClient&&owner===id)return ready;const ticket=++generation;repo?.close();repo=null;owner=id||null;client=nextClient;applied=false;lastProjection=null;connecting=false;
   root.TowerRewards?.reset();root.PlayerAvatar?.clearAccount?.();root.dispatchEvent(new Event('account-state-cleared'));
   if(!owner){ready=Promise.resolve();render();return ready;}
-  let writer=root.sessionStorage.getItem('accountSyncWriterV3');if(!writer){writer=root.crypto.randomUUID();root.sessionStorage.setItem('accountSyncWriterV3',writer);}
+  connecting=true;const uid=owner;ready=(async()=>{
+  const writer=await root.AdventureSyncV2.writerIdentity(root,uid,'account');if(ticket!==generation)return null;
   const cfg=root.AVENTURA_SUPABASE_CONFIG||{},transport=root.AVENTURA_SYNC_LOCAL_LAB?.transport?root.AVENTURA_SYNC_LOCAL_LAB.transport(client,owner):root.AdventureSyncV2.transport({client,owner,url:cfg.url,publishableKey:cfg.publishableKey});
   const next=root.AccountSyncV3.create({owner,writer,storage:root.localStorage,transport,online:()=>navigator.onLine,onChange:()=>{if(repo===next)hydrate();}});repo=next;
-  ready=repo.load().then(()=>{hydrate();return state();}).catch(()=>{render();return null;});return ready;
+  await next.load();if(ticket!==generation)return null;hydrate();return state();
+  })().catch(()=>{if(ticket===generation)render();return null;}).finally(()=>{if(ticket===generation)connecting=false;});return ready;
  }
  async function wait(){if(!repo)await root.AventuraShop?.connect();await ready;if(!state()||!repo.read().confirmed)throw new root.AccountSyncV3.AccountError('unavailable');return state();}
  async function refresh(){if(!repo)await root.AventuraShop?.connect();await ready;if(!repo)throw new root.AccountSyncV3.AccountError('unavailable');if(navigator.onLine)await repo.reconcile();hydrate();return state();}
