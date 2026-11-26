@@ -924,6 +924,15 @@
       return data;
     }
 
+    async function comunidad(action, args = {}) {
+      const calls = {result:['get_versus_result',{p_match:args.matchId}],likes:['get_multiplayer_inbox',{p_offset:args.offset||0}],read:['ack_multiplayer_likes',{p_matches:args.matches}],rivals:['get_versus_rival_history',{p_offset:args.offset||0}]};
+      if (!Object.hasOwn(calls,action)) throw new Error('Invalid community action');
+      const [name,params]=calls[action];
+      const {data,error}=await cliente.rpc(name,params);
+      if(error)throw error;
+      return data;
+    }
+
     const adaptador = Object.freeze({
       proveedor: "supabase",
       destruir,
@@ -935,6 +944,7 @@
       obtenerPerfilJugador,
       obtenerPerfilPublico,
       meGustaPartida,
+      comunidad,
       guardarApariencia,
       unirseSala,
       actualizarPersonaje,

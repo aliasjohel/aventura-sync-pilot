@@ -2246,6 +2246,11 @@ btnBuscarPartida.addEventListener("click", async () => {
 btnCancelarBusqueda.addEventListener("click", cancelarBusquedaPublica);
 
 globalThis.PlayerProfile = Object.freeze({
+  comunidad: async (action,args) => {
+    const adapter=await asegurarConexionSalasVersus();
+    if(!adapter.comunidad)throw new Error('Sin conexión');
+    return adapter.comunidad(action,args);
+  },
   cargar: async () => {
     const adapter = await asegurarConexionSalasVersus();
     if (!adapter.obtenerPerfilJugador) throw new Error("Sin conexión");
@@ -9082,6 +9087,7 @@ async function mostrarResultadoRango(matchId) {
   } catch (_) { if (partidaOnlineVersus?.matchId === matchId) CombatUI.text(nodo, 'Podés consultar tus puntos en tu perfil cuando vuelva la conexión.'); }
 }
 function mostrarResultadoPartidaVersus(ganador, detalle, likeResult = null) {
+  globalThis.MultiplayerResults?.clear();
   globalThis.MatchLikes?.clear();
   globalThis.MultiplayerXPFeedback?.clear();
   document.getElementById('resultadoMonedasVersus').hidden = true;
@@ -9184,6 +9190,9 @@ function mostrarResultadoPartidaVersus(ganador, detalle, likeResult = null) {
       && (!partidaOnlineVersus || partidaOnlineVersus.matchId === receipt.matchId)) {
       const matchId = receipt.matchId, adapter = receipt.adapter;
       resultadoRondaVersus.dataset.likeMatchId = matchId;
+      void globalThis.MultiplayerResults?.show(matchId,adapter,()=>
+        adaptadorSalasVersus===adapter && resultadoRondaVersus.dataset.likeMatchId===matchId &&
+        pantallaVersus.classList.contains('activa') && !resultadoRondaVersus.classList.contains('oculto'));
       void globalThis.MatchLikes?.show(matchId, adapter, () =>
         adaptadorSalasVersus === adapter && resultadoRondaVersus.dataset.likeMatchId === matchId &&
         pantallaVersus.classList.contains('activa') && !resultadoRondaVersus.classList.contains('oculto'));

@@ -60,6 +60,7 @@
     <link rel="stylesheet" href="css/tower-rewards.css?v=20261106-towerrewards1">
     <link rel="stylesheet" href="css/menu-wallet.css?v=20261108-header-height4">
 <link rel="stylesheet" href="css/sync-menu-layout.css">
+    <link rel="stylesheet" href="css/multiplayer-community.css?v=20261126-community1">
 </head>
 
 <body class="intro-pendiente menu-fondo-pendiente">
@@ -111,6 +112,7 @@
                 </h1>
                 <p class="subtitulo" data-i18n="menu.subtitle">Explorá mundos resolviendo palabras</p>
 
+                <button id="likesNotification" type="button" class="likes-notification" hidden aria-live="polite"></button>
                 <button id="btnVersus" data-i18n="menu.playMultiplayer" type="button" aria-controls="pantallaSalaVersus">⚔️ Multijugador</button>
                 <button id="btnModosJuego" data-i18n="menu.adventureTower" type="button" aria-haspopup="dialog" aria-controls="selectorModosJuego">🗺️ Aventura y Torre</button>
                 <button id="btnRankingMenu" data-i18n="menu.ranking" type="button" aria-haspopup="dialog" aria-controls="rankingMenu">🏆 Ranking</button>
@@ -1368,6 +1370,7 @@
                         <p id="etiquetaResultadoVersus">RONDA 1</p>
                         <h2 id="tituloResultadoVersus">¡Ganaste la ronda!</h2>
                         <p id="detalleResultadoVersus">Completaste la palabra antes que tu rival.</p>
+                        <section id="duelPodium" aria-live="polite" hidden></section>
                         <div id="resultadoRangoVersus" role="status" hidden></div>
                         <section id="resultadoMonedasVersus" role="status" hidden></section>
                         <button id="btnRevanchaVersus" class="oculto" type="button">Jugar revancha</button>
@@ -1596,6 +1599,7 @@
             <p id="perfilRanking" class="perfil-ranking"></p>
             <p id="perfilMeGusta" class="perfil-ranking"></p>
             <button id="verHistorialRivales" class="secundario" type="button" data-i18n="profile.matchesRivals">Ver mis partidas y rivales</button>
+            <div class="multiplayer-profile-actions"><button id="viewReceivedLikes" type="button"></button><button id="viewRivalStats" type="button"></button></div>
             <h4 data-i18n="profile.favorites">Personajes favoritos</h4><div id="perfilFavoritos" class="perfil-favoritos"></div>
             <p class="avatar-note" data-i18n="profile.favoritesHelp">Tus favoritos son los personajes que más usás en partidas multijugador terminadas.</p>
             <button id="reintentarPerfil" class="secundario" type="button" hidden data-i18n="profile.retryConnection">Reintentar conexión</button>
@@ -1623,6 +1627,7 @@
       </div>
       <button id="reintentarPerfilPublico" class="secundario" type="button" hidden data-i18n="profile.retry">Reintentar</button>
     </dialog>
+    <dialog id="multiplayerCommunity" class="menu-dialogo multiplayer-community" aria-labelledby="communityTitle"><header class="menu-dialogo-cabecera"><h2 id="communityTitle"></h2><button id="closeCommunity" type="button">×</button></header><p id="communityStatus" role="status"></p><div id="communityItems"></div><button id="communityMore" type="button" hidden></button><button id="communityRetry" type="button" hidden></button></dialog>
     <script src="js/i18n.js?v=20261015-3b-1"></script>
     <script src="js/i18n-es-fallback.js?v=20261113-character-shop1"></script>
     <script src="js/i18n-ui.js?v=20261024-v387-security2"></script>
@@ -1700,6 +1705,7 @@
     <script src="js/character-shop.js?v=20261113-character-shop1"></script>
     <script src="js/profile-background-shop.js?v=20261021-v386-1"></script>
     <script src="js/public-player-profile.js?v=20261030-xplevels1"></script>
+    <script src="js/multiplayer-community.js?v=20261126-community1"></script>
     <script src="js/match-likes.js?v=20261108-likes1"></script>
     <script src="js/menu-wallet.js?v=20261108-header-height4"></script>
     <script src="js/pwa.js?v=20261006-i18n-2b-1"></script>
