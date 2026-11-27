@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "aventura-palabras-runtime-";
-const CACHE_NAME = `${CACHE_PREFIX}v0417-pwa-multiplayer`;
+const CACHE_NAME = `${CACHE_PREFIX}v0418-pwa-guest-recovery`;
 const LEGACY_CACHE_NAMES = new Set([
   `${CACHE_PREFIX}v227`,
   `${CACHE_PREFIX}v226`,
@@ -1300,7 +1300,7 @@ const ASSET_REVISIONS = {
   "./js/word-banks-forest.js": "sha256-1f50cd3a347769733f601c529f3902f9851ba61c9013d9e13198530d49bc275b",
   "./js/word-banks-es.js": "sha256-2747407626268b62dcfbee2a7c8984c8d6da7ac7803652294b418e344099c84f",
   "./js/i18n-settings.js": "sha256-87266c5c9bbd97e9009e2d1f2fa707fd1f3249ca1d91fd1ba800ed0d1c7fe171",
-  "./js/i18n-es-fallback.js": "sha256-91bc289125123febda7c2d4673b5cb0a93a8fc78b1ea40b83d4270344e949aac",
+  "./js/i18n-es-fallback.js": "sha256-e5704cd5c32c93495e47e59baa634f8d871f1c5d47e1e2d2417dc99337091712",
   "./js/i18n-ui.js": "sha256-177f68a93d64a93ba7201874b2020998b99a9644824025d201bb70fb0f735831",
   "./js/narrative-i18n.js": "sha256-e1930c0260e5a07b9ea429390a53b35cd03f785ad11ddbd95b5957d13c90c8b0",
   "./js/i18n-combat.js": "sha256-fdc7a05af378d2f19cd1ed2aa597cf90bb77f73857315f572ce962257187a9c6",
@@ -1316,7 +1316,7 @@ const ASSET_REVISIONS = {
   "./locales/en/cinematics.json": "sha256-ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
   "./locales/en/multiplayer.json": "sha256-98fa53d3787775ebaef4660c7563e0d07973a4b56172a999b9e132ea2bbce690",
   "./locales/en/economy.json": "sha256-ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
-  "./locales/en/errors.json": "sha256-b31715eb6e7405f6ef3d0032dc01fa7525e4a8a371ad35754de44cee48fa5e3c",
+  "./locales/en/errors.json": "sha256-744e76d062510ddec8e8baaa6067fb53411bded22bfb42e29aa1a45398c4e5de",
   "./locales/pt-BR/common.json": "sha256-38322f723857a1d59a29f2eb8bb48f8b3d5132e9a028b81075dbc21a62c9c613",
   "./locales/pt-BR/menu.json": "sha256-ce0566ad7a8dbe31a65472e7f83c93b1c17e795e914733e3b448623d768ca296",
   "./locales/pt-BR/profile.json": "sha256-2b8f65539dabc8d5dd3797ec54f26d18136bcae610eda1aede987f5f6669fb5d",
@@ -1327,7 +1327,7 @@ const ASSET_REVISIONS = {
   "./locales/pt-BR/cinematics.json": "sha256-ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
   "./locales/pt-BR/multiplayer.json": "sha256-fc3ebf2cfc4168af6bd1ebe78cb01d848a941973678cbe481357c47f24657f18",
   "./locales/pt-BR/economy.json": "sha256-ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
-  "./locales/pt-BR/errors.json": "sha256-0996330290ffa36e8530e8c2228ac2c7fdbb2b6d53dede4dd61ec2f84a8f37cf",
+  "./locales/pt-BR/errors.json": "sha256-d56a8dac198788d3d131338f5909c4295b353b9970e2775a4462bda3970651dd",
   "./js/i18n.js": "sha256-39b929be09ad6d90170147ffcd76056ef7df4924681827e750a2250fef9e37fd",
   "./locales/languages.json": "sha256-ac43785e98f0be3a6151d6277d4d6d29322ea80e1741fc3088d60aa368c1cb61",
   "./locales/es/common.json": "sha256-cb97ca529b7178aae55a110077a245b1f7bec4c2c8d5442286e4a62336b056e6",
@@ -1340,7 +1340,7 @@ const ASSET_REVISIONS = {
   "./locales/es/cinematics.json": "sha256-ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
   "./locales/es/multiplayer.json": "sha256-073f2f58839394e3a5f1be34c9f0129ab197d0e889f8e9c77ce37a158b55013b",
   "./locales/es/economy.json": "sha256-ca3d163bab055381827226140568f3bef7eaac187cebd76878e0b63e9e442356",
-  "./locales/es/errors.json": "sha256-e316261b2c7208073edc6700acdb830e213d04bd0313eca3c646e3471beec8ae",
+  "./locales/es/errors.json": "sha256-b373de914cfa55183378cf471734d7914ee91c1d0fc3f258b6345ec028008e24",
   "./assets/images/trajes/aren-union-guardianes-v2.webp": "sha256-fdf22e902cfb07ed4ef548cfb440d41a099a06f0d5e9caa0882481ace9c29e81",
   "./assets/images/trajes/aren-union-guardianes-solos-v3.webp": "sha256-6f6d08ee926c552bf02c4bf78ceb570aa9c7e7ac3560dd6ed69d52eca56b7b22",
   "./assets/images/trajes/aren-union-rayo-v2.webp": "sha256-df77f8e8d29539f817fdc1e6684ccbb823858e19ebe435837df55664846c6f15",
@@ -1650,7 +1650,7 @@ const ASSET_REVISIONS = {
   "./js/versus-engine.js": "sha256-544297ccc805d3448fd1563053f6ebaba45483eef69e2d65ce045eb78282a9b4",
   "./js/arcade-rules.js": "sha256-688fe36bc763fe065665dfd305b6ea99efaf9aea2667a863f61b5cc257e521f6",
   "./js/versus-room.js": "sha256-bcd7d15b293d34bd9b73cae19909b52492c7defbd8629952d99b3b004b56be0f",
-  "./js/versus-room-supabase.js": "sha256-e15044247aad64e7813d91d3539b4f0d4c0df744ca8c493f69ae033e7a2e43f2",
+  "./js/versus-room-supabase.js": "sha256-43ab3deed560adafe45aa7708590a7928cd17bbb37bbc843184ec1a2b1263b51",
   "./js/puzzle-lessons.js": "sha256-c3269cb6042e311b9768722585ca236fc2696bc3918bd5cd80675ac0bf7dbaf5",
   "./js/lessons-i18n.js": "sha256-1bb946ab742bf6ef2f929751ba8c9f953446148148f81917c980d399cce33904",
   "./js/multiplayer-i18n.js": "sha256-b4bbf6b3e88b3146b4165702492d4d2104557d3930cd4ee1f9610a170fc6d169",
@@ -2011,8 +2011,8 @@ const ASSET_REVISIONS = {
   "./js/adventure-account-v2.js": "sha256-15766d19de585b254bea0d7cfbe1da5aabd615db95599664f12d89c631055248",
   "./js/account-sync-v3.js": "sha256-3ff23e31ec34627c0731e6f0f3fd6b79623eac78af43aa00f020326ede485b86",
   "./js/account-runtime-v3.js": "sha256-f5af40c0df88594d73d4afcd256afbd8af9ace968185a313e24bccf4baec7a74",
-  "./pilot-config.js": "sha256-d765e2bf0497191f4fb9d03d9cbfd0b6c67a343e9f223c1c51b3e830722eebbb",
-  "./pilot-gate.js": "sha256-66751a94507637a65dbaa6079349c1d9518acaf58fdf9dcf2564e2f5cafb2d2d",
+  "./pilot-config.js": "sha256-c9bf2b80a92e02c8aac75df08744bb0d5bfb1e769bfadd520613d1d697cb9725",
+  "./pilot-gate.js": "sha256-54e297daae405abc194b9f6ebcb4b990a09f17ffaef2141434ec2a29de96a6cf",
   "./css/sync-menu-layout.css": "sha256-8b5639da9724641e2d006400a0c2c3850cbfd9c643e09b4f9f92332f622c765f",
   "./js/multiplayer-community.js": "sha256-9bd8adbf9d6393620225939d0594c15e50ba8046fe7788e6a20c983ee0ddae67",
   "./css/multiplayer-community.css": "sha256-41c1b6291fb8ce6f399eba32ecc8462e504ff5883eac7039daf19bfdf03d9b38"

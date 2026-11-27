@@ -24,5 +24,12 @@
   "unionPlaying": "Finish the duel before changing access to Aren Unión.",
   "unionCode": "Enter your personal code under Developer access before enabling Aren Unión online.",
   "classicRoomForRanked": "This room is Classic and awards no ranking points. Leave the room and search again to play Ranked.",
-  "rankedRoomForClassic": "This room is Ranked. You can continue it or leave before searching for Classic."
+  "rankedRoomForClassic": "This room is Ranked. You can continue it or leave before searching for Classic.",
+  "guestSession": "Could not start your guest session. Please retry.",
+  "savedPlayer": "Could not recover your saved player. Reconnect and retry without clearing data.",
+  "guestStorage": "Enable browser storage to keep your online player.",
+  "roomPreparation": "Could not verify the preparation time. Please retry.",
+  "multiplayerConnect": "Could not connect to multiplayer. Please retry.",
+  "matchSearch": "Could not search for an opponent. Please retry.",
+  "guestUnavailable": "Guest access is unavailable. Try signing in with your account."
 }

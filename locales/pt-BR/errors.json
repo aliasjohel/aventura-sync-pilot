@@ -24,5 +24,12 @@
   "unionPlaying": "Termine o duelo antes de alterar o acesso a Aren Unión.",
   "unionCode": "Digite seu código pessoal em Acesso de desenvolvedor antes de ativar Aren Unión online.",
   "classicRoomForRanked": "Esta sala é Clássica e não dá pontos no ranking. Saia da sala e busque novamente para jogar Ranqueado.",
-  "rankedRoomForClassic": "Esta sala é Ranqueada. Você pode continuar ou sair antes de buscar Clássico."
+  "rankedRoomForClassic": "Esta sala é Ranqueada. Você pode continuar ou sair antes de buscar Clássico.",
+  "guestSession": "Não foi possível iniciar sua sessão de convidado. Tente novamente.",
+  "savedPlayer": "Não foi possível recuperar seu jogador salvo. Reconecte e tente novamente sem apagar os dados.",
+  "guestStorage": "Ative o armazenamento do navegador para manter seu jogador online.",
+  "roomPreparation": "Não foi possível verificar o tempo de preparação. Tente novamente.",
+  "multiplayerConnect": "Não foi possível conectar ao multijogador. Tente novamente.",
+  "matchSearch": "Não foi possível buscar um adversário. Tente novamente.",
+  "guestUnavailable": "O acesso de convidados não está disponível. Tente entrar com sua conta."
 }
