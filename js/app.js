@@ -1466,7 +1466,7 @@ function actualizarPanelAmigosVersus(
   cuentaPermanente = false,
 ) {
   const permanente = Boolean(usuario && cuentaPermanente);
-  registroCuentaVersus.classList.toggle("oculto", permanente);
+  registroCuentaVersus.classList.toggle("oculto", permanente || globalThis.AVENTURA_PILOT_CONFIG?.emailRegistrationEnabled!==true);
   crearPerfilVersus.classList.toggle("oculto", !permanente || Boolean(estado?.profile));
   contenidoAmigosVersus.classList.toggle("oculto", !estado?.profile);
   GameUI.text(estadoCuentaVersus, errorSocial
@@ -3267,10 +3267,14 @@ btnGuardarCuentaVersus.addEventListener("click", () => {
   );
 });
 
-btnEntrarCuentaVersus.addEventListener("click", () => ejecutarAccionAmigosVersus(
-  () => adaptadorSalasVersus.entrarConCorreo(correoCuentaVersus.value),
-  "Te enviamos un enlace para entrar a tu cuenta.",
-));
+btnEntrarCuentaVersus.hidden=globalThis.AVENTURA_PILOT_CONFIG?.emailRegistrationEnabled!==true;
+btnEntrarCuentaVersus.addEventListener("click", () => {
+  if(globalThis.AVENTURA_PILOT_CONFIG?.emailRegistrationEnabled!==true)return;
+  return ejecutarAccionAmigosVersus(
+    () => adaptadorSalasVersus.entrarConCorreo(correoCuentaVersus.value),
+    "Te enviamos un enlace para entrar a tu cuenta.",
+  );
+});
 
 // Google is disabled in Supabase. Keep the translated control for later activation.
 btnGoogleCuentaVersus.addEventListener("click", () => {

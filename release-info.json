@@ -1,13 +1,13 @@
 {
-  "version": "0.4.19",
+  "version": "0.4.20",
   "platform": "pwa",
-  "androidVersionCode": 22,
+  "androidVersionCode": 23,
   "changes": [
-    "google-closed-test-opt-in",
-    "guest-google-identity-link",
-    "safe-profile-conflicts",
-    "native-google-callback",
-    "email-and-facebook-disabled"
+    "guest-link-before-switch",
+    "isolated-google-session-verification",
+    "owner-fenced-oauth-callbacks",
+    "safe-cancellation-and-network-errors",
+    "closed-google-test-facebook-email-disabled"
   ],
   "databaseMigrations": 0
 }

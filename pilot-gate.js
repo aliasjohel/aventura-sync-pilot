@@ -4,18 +4,25 @@
  const cfg=globalThis.AVENTURA_PILOT_CONFIG,general=cfg?.scope==='verified-accounts';
  let node,client,subscription,generation=0,scheduled,entryBusy=false,entryStatus='',entryEmail='',forcedEntry=false,entryUser=null;
  const googleCopy={
-  es:{link:'Continuar con Google',login:'Entrar a otro perfil de Google',manage:'Vincular o cambiar cuenta',current:'Continuar con mi cuenta',saved:'Tu cuenta conserva tu jugador. Cambiar de perfil no fusiona su progreso ni sus monedas.',switch:'Vas a entrar a otro perfil. El progreso y las monedas de este invitado no se trasladarán ni se fusionarán. ¿Querés continuar?',conflict:'Esa cuenta de Google ya pertenece a otro perfil. Tu jugador se conserva; no se fusionaron datos.',failed:'No pudimos verificar el ingreso con Google. Tu jugador se conserva; reintentá.'},
-  en:{link:'Continue with Google',login:'Switch to another Google profile',manage:'Link or switch account',current:'Continue with my account',saved:'Your account keeps your player. Switching profiles does not merge progress or coins.',switch:'You are switching to another profile. This player’s progress and coins will not transfer or merge. Continue?',conflict:'That Google account already belongs to another profile. Your player is preserved; no data was merged.',failed:'Could not verify Google sign-in. Your player is preserved; please retry.'},
-  'pt-BR':{link:'Continuar com Google',login:'Entrar em outro perfil Google',manage:'Vincular ou trocar de conta',current:'Continuar com minha conta',saved:'Sua conta mantém seu jogador. Trocar de perfil não mescla progresso ou moedas.',switch:'Você vai entrar em outro perfil. O progresso e as moedas deste jogador não serão transferidos nem mesclados. Continuar?',conflict:'Essa conta Google já pertence a outro perfil. Seu jogador foi mantido; nenhum dado foi mesclado.',failed:'Não foi possível verificar a entrada com Google. Seu jogador foi mantido; tente novamente.'}
+  es:{start:'Continuar con Google',link:'Vincular mi cuenta con Google',login:'Cambiar de jugador',manage:'Vincular o cambiar cuenta',current:'Volver a mi jugador',saved:'Tu jugador está vinculado a Google. Al cambiar, cada perfil conserva por separado sus monedas, personajes, compras y progreso.',guestSafe:'Vinculá Google a este invitado para conservar el mismo jugador y poder recuperarlo. Antes de cambiar de jugador, necesitás completar esa vinculación.',switch:'Vas a abrir otro jugador de Google. Tu jugador actual conservará sus datos y podrás volver ingresando con su Google vinculado. No se trasladarán ni se fusionarán monedas, compras o progreso. ¿Querés cambiar?',conflict:'Ese Google ya pertenece a otro jugador. Tu sesión actual sigue intacta. Para guardar este invitado, elegí un Google que todavía no tenga otro jugador.',linkFirst:'Primero vinculá Google a este jugador. Un invitado sin vincular no puede cambiar de jugador porque perdería su forma de volver.',cancelled:'Cancelaste el ingreso con Google. Conservás tu jugador actual.',failed:'No pudimos completar Google. Conservás el acceso a tu jugador actual; comprobá la conexión y reintentá.',linked:'Tu cuenta está vinculada a Google y conserva el mismo jugador.',switched:'Ingreso confirmado. Estás usando los datos de este jugador.',pending:'Ya hay un ingreso con Google pendiente. Completalo o cancelalo antes de iniciar otro.',dismiss:'Entendido'},
+  en:{start:'Continue with Google',link:'Link my account with Google',login:'Switch player',manage:'Link or switch account',current:'Return to my player',saved:'Your player is linked to Google. Each profile keeps its own coins, characters, purchases and progress when you switch.',guestSafe:'Link Google to this guest to keep and recover the same player. Complete linking before switching players.',switch:'You will open another Google player. Your current player keeps its data and can be recovered with its linked Google account. Coins, purchases and progress will not transfer or merge. Switch player?',conflict:'That Google account already belongs to another player. Your current session is intact. To save this guest, choose a Google account without another player.',linkFirst:'Link Google to this player first. An unlinked guest cannot switch players because it would lose its way back.',cancelled:'Google sign-in cancelled. You keep your current player.',failed:'Google sign-in could not finish. You keep access to your current player; check the connection and retry.',linked:'Your account is linked to Google and keeps the same player.',switched:'Sign-in confirmed. You are using this player’s data.',pending:'A Google sign-in is pending. Finish or cancel it before starting another.',dismiss:'Got it'},
+  'pt-BR':{start:'Continuar com Google',link:'Vincular minha conta ao Google',login:'Trocar de jogador',manage:'Vincular ou trocar de conta',current:'Voltar ao meu jogador',saved:'Seu jogador está vinculado ao Google. Cada perfil mantém suas próprias moedas, personagens, compras e progresso ao trocar.',guestSafe:'Vincule Google a este convidado para manter e recuperar o mesmo jogador. Conclua a vinculação antes de trocar de jogador.',switch:'Você abrirá outro jogador do Google. O jogador atual mantém seus dados e pode ser recuperado com seu Google vinculado. Moedas, compras e progresso não serão transferidos ou mesclados. Trocar de jogador?',conflict:'Esse Google já pertence a outro jogador. Sua sessão atual permanece intacta. Para salvar este convidado, escolha um Google sem outro jogador.',linkFirst:'Primeiro vincule Google a este jogador. Um convidado não vinculado não pode trocar de jogador porque perderia o caminho de volta.',cancelled:'Entrada com Google cancelada. Seu jogador atual foi mantido.',failed:'Não foi possível concluir a entrada com Google. Você mantém o acesso ao jogador atual; confira a conexão e tente novamente.',linked:'Sua conta está vinculada ao Google e mantém o mesmo jogador.',switched:'Entrada confirmada. Você está usando os dados deste jogador.',pending:'Existe uma entrada com Google pendente. Conclua ou cancele antes de iniciar outra.',dismiss:'Entendi'}
  };
  const googleWords=()=>googleCopy[globalThis.I18n?.language]||googleCopy.es;
+ const googleMessage=code=>{const w=googleWords();return code==='GOOGLE_PROFILE_CONFLICT'?w.conflict:code==='LINK_CURRENT_PLAYER_FIRST'?w.linkFirst:code==='AUTH_CANCELLED'?w.cancelled:code==='linked'?w.linked:code==='switched'?w.switched:w.failed;};
+ function googleNotice(code){
+  document.getElementById('googleAccountNotice')?.remove();const box=document.createElement('aside');box.id='googleAccountNotice';box.setAttribute('role','status');box.style.cssText='position:fixed;inset:12px 12px auto;z-index:2147483100;max-width:560px;margin:auto;padding:16px;background:#10251f;color:white;border:1px solid #80dbc0;border-radius:12px;font:16px system-ui;box-shadow:0 6px 22px #0008';
+  const text=document.createElement('p');text.textContent=googleMessage(code);const close=document.createElement('button');close.type='button';close.textContent=googleWords().dismiss;close.style.cssText='min-height:44px;padding:8px 16px';close.onclick=()=>box.remove();box.append(text,close);document.body.append(box);
+ }
+ function resumeGoogle(code){entryBusy=false;forcedEntry=false;entryStatus='';try{chooseEntry('guest');}catch{}googleNotice(code);recheck();}
+ window.addEventListener('google-account-settled',event=>resumeGoogle(event.detail?.code));
  const entryKey='aventura-account-choice:v1:'+cfg.project;
  function entryChoice(){try{return localStorage.getItem(entryKey);}catch{return null;}}
  function chooseEntry(value){localStorage.setItem(entryKey,value);}
  const entryCopy={
-  es:{title:'Bienvenido a Aventura de Palabras',intro:'Elegí cómo querés entrar.',email:'Tu correo',create:'Crear cuenta con correo',login:'Ya tengo cuenta',guest:'Continuar como invitado',help:'Como invitado conservás tu jugador en esta aplicación. Si borrás sus datos o cambiás de teléfono, podés perder el acceso a tu progreso. Vinculá un correo para recuperarlo.',sent:'Revisá tu correo y confirmá el enlace. Después volvé aquí. También podés continuar como invitado mientras tanto.',failed:'No pudimos enviar el correo. Revisá la dirección e intentá de nuevo en unos minutos.',offline:'Necesitás conexión para tu primer ingreso o para entrar con correo.',busy:'Enviando…'},
-  en:{title:'Welcome to Aventura de Palabras',intro:'Choose how to sign in.',email:'Your email',create:'Create account with email',login:'I already have an account',guest:'Continue as guest',help:'As a guest, your player stays in this app. Clearing its data or changing phones can cost you access to your progress. Link an email to recover it.',sent:'Check your email and confirm the link, then return here. You can also continue as a guest in the meantime.',failed:'Could not send the email. Check the address and try again in a few minutes.',offline:'Your first sign-in and email sign-in require a connection.',busy:'Sending…'},
-  'pt-BR':{title:'Boas-vindas a Aventura de Palabras',intro:'Escolha como entrar.',email:'Seu e-mail',create:'Criar conta com e-mail',login:'Já tenho conta',guest:'Continuar como convidado',help:'Como convidado, seu jogador fica neste aplicativo. Apagar os dados ou trocar de celular pode fazer você perder o acesso ao progresso. Vincule um e-mail para recuperá-lo.',sent:'Confira seu e-mail e confirme o link. Depois volte aqui. Você também pode continuar como convidado enquanto isso.',failed:'Não foi possível enviar o e-mail. Confira o endereço e tente novamente em alguns minutos.',offline:'A primeira entrada e a entrada por e-mail precisam de conexão.',busy:'Enviando…'}
+  es:{title:'Bienvenido a Aventura de Palabras',intro:'Elegí cómo querés entrar.',email:'Tu correo',create:'Crear cuenta con correo',login:'Ya tengo cuenta',guest:'Continuar como invitado',help:'Como invitado conservás tu jugador en esta aplicación. Si borrás sus datos o cambiás de teléfono, podés perder el acceso a tu progreso. Vinculá Google a este invitado para poder recuperarlo.',sent:'Revisá tu correo y confirmá el enlace. Después volvé aquí. También podés continuar como invitado mientras tanto.',failed:'No pudimos enviar el correo. Revisá la dirección e intentá de nuevo en unos minutos.',offline:'Necesitás conexión para tu primer ingreso o para entrar con correo.',busy:'Enviando…'},
+  en:{title:'Welcome to Aventura de Palabras',intro:'Choose how to sign in.',email:'Your email',create:'Create account with email',login:'I already have an account',guest:'Continue as guest',help:'As a guest, your player stays in this app. Clearing its data or changing phones can cost you access to your progress. Link Google to this guest to recover it.',sent:'Check your email and confirm the link, then return here. You can also continue as a guest in the meantime.',failed:'Could not send the email. Check the address and try again in a few minutes.',offline:'Your first sign-in and email sign-in require a connection.',busy:'Sending…'},
+  'pt-BR':{title:'Boas-vindas a Aventura de Palabras',intro:'Escolha como entrar.',email:'Seu e-mail',create:'Criar conta com e-mail',login:'Já tenho conta',guest:'Continuar como convidado',help:'Como convidado, seu jogador fica neste aplicativo. Apagar os dados ou trocar de celular pode fazer você perder o acesso ao progresso. Vincule Google a este convidado para recuperá-lo.',sent:'Confira seu e-mail e confirme o link. Depois volte aqui. Você também pode continuar como convidado enquanto isso.',failed:'Não foi possível enviar o e-mail. Confira o endereço e tente novamente em alguns minutos.',offline:'A primeira entrada e a entrada por e-mail precisam de conexão.',busy:'Enviando…'}
  };
  function welcome(){
   const copy=entryCopy[globalThis.I18n?.language]||entryCopy.es;
@@ -28,22 +35,22 @@
   const create=document.createElement('button');create.type='submit';create.textContent=copy.create;
   const login=document.createElement('button');login.type='button';login.textContent=copy.login;
   const words=googleWords();
-  const guest=document.createElement('button');guest.type='button';guest.textContent=entryUser?.is_anonymous===false?words.current:copy.guest;
-  const google=document.createElement('button');google.type='button';google.textContent=words.link;google.disabled=globalThis.AccountGoogle?.available?.()!==true;google.hidden=google.disabled;
-  const existing=document.createElement('button');existing.type='button';existing.textContent=words.login;existing.disabled=google.disabled;existing.hidden=google.hidden;
-  const googleError=error=>error?.code==='GOOGLE_PROFILE_CONFLICT'?words.conflict:words.failed;
+  const guest=document.createElement('button');guest.type='button';guest.textContent=entryUser?words.current:copy.guest;
+  const google=document.createElement('button');google.type='button';google.textContent=entryUser?words.link:words.start;google.disabled=globalThis.AccountGoogle?.available?.()!==true;google.hidden=google.disabled;
+  const existing=document.createElement('button');existing.type='button';existing.textContent=words.login;const linked=entryUser?.is_anonymous===false&&entryUser?.identities?.some(i=>i.provider==='google'&&i.user_id===entryUser.id);existing.disabled=google.disabled||!linked;existing.hidden=google.hidden||!entryUser;google.hidden=google.hidden||Boolean(linked);
+  const googleError=error=>googleMessage(error?.code);
   const cancelGoogle=document.createElement('button');cancelGoogle.type='button';cancelGoogle.textContent=({'es':'Cancelar ingreso con Google','en':'Cancel Google sign-in','pt-BR':'Cancelar entrada com Google'})[globalThis.I18n?.language]||'Cancelar ingreso con Google';cancelGoogle.hidden=!globalThis.AccountGoogle?.pending?.();
-  cancelGoogle.onclick=()=>{if(entryBusy)return;globalThis.AccountGoogle?.cancel();entryStatus='';welcome();};
+  cancelGoogle.onclick=()=>{if(entryBusy)return;globalThis.AccountGoogle?.cancel();resumeGoogle('AUTH_CANCELLED');};
   async function googleAction(switching){
    if(entryBusy||globalThis.AccountGoogle?.available?.()!==true)return;
-   if(switching&&!confirm(words.switch))return;
+   if(switching&&!linked){entryStatus=words.linkFirst;welcome();return;}if(switching&&!confirm(words.switch))return;
    entryBusy=true;form.querySelectorAll('button,input').forEach(b=>b.disabled=true);
-   try{chooseEntry('google-pending');const result=await (switching?AccountGoogle.login({confirmProfileSwitch:true}):AccountGoogle.link());if(result.status==='already_linked'){chooseEntry('guest');forcedEntry=false;entryStatus='';}}
-   catch(error){entryStatus=googleError(error);}
+   try{chooseEntry('google-pending');const result=await (switching?AccountGoogle.login({confirmProfileSwitch:true}):entryUser?AccountGoogle.link():AccountGoogle.login());if(result.status==='already_linked')resumeGoogle('linked');}
+   catch(error){if(error?.code==='PENDING')entryStatus=words.pending;else if(error?.code!=='BUSY')resumeGoogle(error?.code);}
    finally{entryBusy=false;recheck();}
   }
   google.onclick=()=>void googleAction(false);existing.onclick=()=>void googleAction(true);
-  const help=document.createElement('p');help.textContent=entryUser?.is_anonymous===false?words.saved:copy.help;help.style.cssText='font-size:14px;line-height:1.5';
+  const help=document.createElement('p');help.textContent=linked?words.saved:entryUser?words.guestSafe:copy.help;help.style.cssText='font-size:14px;line-height:1.5';
   const send=async registering=>{
    if(cfg.emailRegistrationEnabled!==true)return;
    if(entryBusy||!form.reportValidity())return;
@@ -63,7 +70,7 @@
    finally{entryBusy=false;recheck();}
   };
   form.onsubmit=e=>{e.preventDefault();void send(true);};login.onclick=()=>void send(false);
-  guest.onclick=()=>{try{chooseEntry('guest');forcedEntry=false;entryStatus='';void check();}catch{entryStatus=copy.failed;welcome();}};
+  guest.onclick=()=>{try{if(globalThis.AccountGoogle?.pending?.())AccountGoogle.cancel();chooseEntry('guest');forcedEntry=false;entryStatus='';void check();}catch{entryStatus=copy.failed;welcome();}};
   for(const e of [email,create,login,google,existing,cancelGoogle,guest])e.style.cssText='box-sizing:border-box;width:100%;min-width:0;white-space:normal;min-height:46px;padding:12px;border-radius:10px;font:inherit;transform:none';
   if(cfg.emailRegistrationEnabled===true)form.append(label,email,create,login);
   form.append(google,existing,cancelGoogle,guest,help);node.append(form);guest.focus();
@@ -89,6 +96,7 @@
   globalThis.dispatchEvent(new Event('pilot-admission-changed'));
  }
  function admit(uid,offline=false){
+  try{const n=JSON.parse(sessionStorage.getItem('aventura-google-notice:v1')||'null');if(n){sessionStorage.removeItem('aventura-google-notice:v1');if(n.owner===uid)googleNotice(n.code);}}catch{}
   node?.remove();node=null;let notice=document.getElementById('pilotOfflineNotice');
   if(offline){if(!notice){notice=document.createElement('p');notice.id='pilotOfflineNotice';notice.setAttribute('role','status');(document.querySelector('#modalConfiguracion .panel-configuracion')||document.body).prepend(notice);}notice.textContent='Sin conexión: última copia local de esta cuenta. Los avances no están confirmados por Supabase.';}else notice?.remove();
   globalThis.AVENTURA_SYNC_ADMISSION={owner:uid,confirmed:!offline,offline};globalThis.dispatchEvent(new Event('pilot-admission-confirmed'));
@@ -106,17 +114,20 @@
   return globalThis.AccountRuntimeV3.state()?.userId===uid&&globalThis.AdventureAccountV2.state()?.userId===uid&&(!navigator.onLine||globalThis.AccountRuntimeV3.read()?.confirmed);
  }
  async function check(){
-  if(entryBusy)return;
+  if(entryBusy||globalThis.AccountGoogle?.processing?.())return;
   const ticket=++generation;show('Comprobando tu cuenta y la sincronización…');const current=()=>ticket===generation;
   node.querySelector('button').disabled=true;
   try{
    await deadline(globalThis.AventuraOnline.cargarSupabase());if(!current())return;client=globalThis.AventuraSupabase.obtenerCliente();
-   try{await globalThis.AccountGoogle?.finishPending();}catch(error){diagnose('google-return',error);forcedEntry=true;entryStatus=error?.code==='GOOGLE_PROFILE_CONFLICT'?googleWords().conflict:googleWords().failed;}
+   try{await globalThis.AccountGoogle?.finishPending();}catch(error){diagnose('google-return',error);forcedEntry=false;entryStatus='';chooseEntry('guest');googleNotice(error?.code);}
    if(navigator.onLine&&!subscription&&client.auth.onAuthStateChange)subscription=client.auth.onAuthStateChange(()=>recheck());
    const saved=globalThis.AventuraSupabase.tieneSesionGuardada?.();
    const local=!navigator.onLine&&globalThis.AventuraSupabase.leerSesionLocal?globalThis.AventuraSupabase.leerSesionLocal():await deadline(client.auth.getSession());if(!current())return;
    let session=local.data?.session;
    entryUser=session?.user||null;
+   if(forcedEntry&&session?.user?.id&&navigator.onLine){
+    const proof=await deadline(client.auth.getUser());if(!current())return;if(!proof.error&&proof.data?.user?.id===session.user.id)entryUser=proof.data.user;
+   }
    if(local.error){diagnose('session',local.error);show('No pudimos recuperar tu sesión. Reconectá y reintentá sin borrar datos.');return;}
    // Existing players are not forced through onboarding after an update.
    if(!forcedEntry&&session?.user?.id&&!entryChoice())chooseEntry('guest');

@@ -1,5 +1,5 @@
 const CACHE_PREFIX = "aventura-palabras-runtime-";
-const CACHE_NAME = `${CACHE_PREFIX}v0419-pwa-google-closed-test`;
+const CACHE_NAME = `${CACHE_PREFIX}v0420-pwa-safe-account-switch`;
 const LEGACY_CACHE_NAMES = new Set([
   `${CACHE_PREFIX}v227`,
   `${CACHE_PREFIX}v226`,
@@ -1554,8 +1554,8 @@ const ASSET_REVISIONS = {
   "./js/public-player-profile.js": "sha256-7d5baa433d26631235dbe3fff4a3d4a01b79935b6a02b7350eb3e371233fdaf9",
   "./js/match-likes.js": "sha256-a96befb24dac2e802f4e9318221e02488ef938400d8eead0b7278f8b160744d5",
   "./js/menu-wallet.js": "sha256-b6dfeea9d16dd67d4181b8c768c0b990a38332659d21bf17515aae2105745f9c",
-  "./": "sha256-a9f79c000390e3a9255244f4418fcc4a565d2c76a683c33193a8bd69043bc82f",
-  "./index.html": "sha256-a9f79c000390e3a9255244f4418fcc4a565d2c76a683c33193a8bd69043bc82f",
+  "./": "sha256-cabc4268823cc592ed06446a40cf8f017bc1d26ca61e9a06c4066e391cec99b6",
+  "./index.html": "sha256-cabc4268823cc592ed06446a40cf8f017bc1d26ca61e9a06c4066e391cec99b6",
   "./manifest.json": "sha256-ae9d76f88e38f99edcc93e0ac012b0340c8443f8fbdb71cbc36990f02688d758",
   "./css/styles.css": "sha256-6bd3dc71fef7f79f1240f5f6d7e506ea75e403d3736c63c63a6e1edd3915b82d",
   "./css/azrak-world.css": "sha256-97ad7046dc7eafa9e8caaee3e00b1cb27e6b6314b99642d49e6ffda4fa8fcfe2",
@@ -1646,7 +1646,7 @@ const ASSET_REVISIONS = {
   "./js/intro.js": "sha256-9427da5d894c4833f2616c5cb3a4b98042e319809ad56f03388f8d81256e0bd9",
   "./js/supabase-loader.js": "sha256-643b337516766baa58672b44ee7288728faee86a9ba3bcc43eacbe05403e5c34",
   "./js/supabase-config.js": "sha256-305eac5a6b712731f4e372cca9f6a4f2af0610e772bd928eaa5e75fc0b427295",
-  "./js/supabase-client.js": "sha256-56678d4b0e282cd55eced9d18fe2f1b1c2b24b8ceff8d0525d2469b6e1a75817",
+  "./js/supabase-client.js": "sha256-7dc366dd6cc2bf2eec1d1a0fbeadb0c8fdf7939b39a0dac5ae6c8d7ae4c4caa0",
   "./js/word-gameplay.js": "sha256-ed28310b7afcba7a3ce8391e8a26d23ec39ae19f710b99016de494c3dffe4913",
   "./js/versus-engine.js": "sha256-544297ccc805d3448fd1563053f6ebaba45483eef69e2d65ce045eb78282a9b4",
   "./js/arcade-rules.js": "sha256-688fe36bc763fe065665dfd305b6ea99efaf9aea2667a863f61b5cc257e521f6",
@@ -1656,7 +1656,7 @@ const ASSET_REVISIONS = {
   "./js/lessons-i18n.js": "sha256-1bb946ab742bf6ef2f929751ba8c9f953446148148f81917c980d399cce33904",
   "./js/multiplayer-i18n.js": "sha256-b4bbf6b3e88b3146b4165702492d4d2104557d3930cd4ee1f9610a170fc6d169",
   "./js/adventure-puzzles.js": "sha256-0172daaa9b58276982a9e2c7a1732e8f85a23be3e37f2872d7b5f73cbb939a5f",
-  "./js/app.js": "sha256-88ba7e396c052534e6cbdfaa6c74c3243f1d643c2fb9aed7a499572a2e13c5fc",
+  "./js/app.js": "sha256-c9880a1f172fc8972f81b03ea027154e44e2ebb73372de448f45db8a4c652713",
   "./js/kairos-forest.js": "sha256-33d3e0c440834480046b45d1afe09855b14abdaa86bad36d4eb808e93d947e51",
   "./css/kairos-forest.css": "sha256-68643318666681d395edf4b99fcdca635640f68308d4f9658adf5c3e0f6b9269",
   "./assets/images/cinematicas/bosque-kairos/aparicion-v1.png": "sha256-219bb71f292b52e1ecd60f82bd70559d157331945d1c7ff1c23552cfb212da7d",
@@ -2012,13 +2012,13 @@ const ASSET_REVISIONS = {
   "./js/adventure-account-v2.js": "sha256-15766d19de585b254bea0d7cfbe1da5aabd615db95599664f12d89c631055248",
   "./js/account-sync-v3.js": "sha256-3ff23e31ec34627c0731e6f0f3fd6b79623eac78af43aa00f020326ede485b86",
   "./js/account-runtime-v3.js": "sha256-f5af40c0df88594d73d4afcd256afbd8af9ace968185a313e24bccf4baec7a74",
-  "./pilot-config.js": "sha256-a879686798810f7a006b6ba7d645f0dd190f30eb23175e0c4f7e0163047fbaeb",
-  "./pilot-gate.js": "sha256-d50c64a2cd6f44a7800f800bc56f3a09bda872b1b83f2cac3f46da20e216cde6",
+  "./pilot-config.js": "sha256-f25a41b05e158d9fbb74fddc7cd50fb6048fee2df186c15de51a011a68b6db25",
+  "./pilot-gate.js": "sha256-9125b117f07455186d052fc4ea1c12ddbb66c115a530b3f428e82d670f76f0a1",
   "./css/sync-menu-layout.css": "sha256-8b5639da9724641e2d006400a0c2c3850cbfd9c643e09b4f9f92332f622c765f",
   "./js/multiplayer-community.js": "sha256-9bd8adbf9d6393620225939d0594c15e50ba8046fe7788e6a20c983ee0ddae67",
   "./css/multiplayer-community.css": "sha256-41c1b6291fb8ce6f399eba32ecc8462e504ff5883eac7039daf19bfdf03d9b38",
-  "./js/google-account.js": "sha256-0fa44fe9759cc7722f0eaf69d7fcbb1e6e62d98a09b7636675f888831838ebc1",
-  "./js/google-account-browser.js": "sha256-1152d4372d3bfd78a38ba0ac40604dcd46466a4f3f47da7608ed0826dbdde3fd"
+  "./js/google-account.js": "sha256-80577937a3fe99d8e9a6de4a7748783b4f9725d3c598bfb9da221725d60ab884",
+  "./js/google-account-browser.js": "sha256-d63470cccf105514e7895c20eefb54fb2a5e330451fbff53ecf52a11e20a82c1"
 };
 const LEGACY_RESOURCE_REVISIONS = {
   "./js/word-banks-es.js": "aventura-palabras-runtime-v347",
