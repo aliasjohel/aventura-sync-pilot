@@ -33,7 +33,9 @@
     cliente=raiz.supabase.createClient(url,publishableKey,{
       global:{fetch:fetchAcotado},
       auth:{persistSession:true,autoRefreshToken:raiz.navigator?.onLine!==false,storageKey:claveSesion(),
-        detectSessionInUrl: true,
+        flowType:'pkce',
+        // Our Google return validates its pending owner and flow before exchange.
+        detectSessionInUrl: !new URL(raiz.location?.href||'https://local.invalid/').searchParams.has('av_google_flow'),
       },
     });
     return cliente;

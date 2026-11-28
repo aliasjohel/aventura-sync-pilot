@@ -1,11 +1,13 @@
 {
-  "version": "0.4.18",
+  "version": "0.4.19",
   "platform": "pwa",
-  "androidVersionCode": 21,
+  "androidVersionCode": 22,
   "changes": [
-    "expired-guest-room-recovery",
-    "specific-online-errors",
-    "accounts-provider-setup-pending"
+    "google-closed-test-opt-in",
+    "guest-google-identity-link",
+    "safe-profile-conflicts",
+    "native-google-callback",
+    "email-and-facebook-disabled"
   ],
   "databaseMigrations": 0
 }

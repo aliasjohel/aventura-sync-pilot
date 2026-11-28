@@ -2,7 +2,13 @@
 (() => {
  'use strict';
  const cfg=globalThis.AVENTURA_PILOT_CONFIG,general=cfg?.scope==='verified-accounts';
- let node,client,subscription,generation=0,scheduled,entryBusy=false,entryStatus='',entryEmail='';
+ let node,client,subscription,generation=0,scheduled,entryBusy=false,entryStatus='',entryEmail='',forcedEntry=false,entryUser=null;
+ const googleCopy={
+  es:{link:'Continuar con Google',login:'Entrar a otro perfil de Google',manage:'Vincular o cambiar cuenta',current:'Continuar con mi cuenta',saved:'Tu cuenta conserva tu jugador. Cambiar de perfil no fusiona su progreso ni sus monedas.',switch:'Vas a entrar a otro perfil. El progreso y las monedas de este invitado no se trasladarán ni se fusionarán. ¿Querés continuar?',conflict:'Esa cuenta de Google ya pertenece a otro perfil. Tu jugador se conserva; no se fusionaron datos.',failed:'No pudimos verificar el ingreso con Google. Tu jugador se conserva; reintentá.'},
+  en:{link:'Continue with Google',login:'Switch to another Google profile',manage:'Link or switch account',current:'Continue with my account',saved:'Your account keeps your player. Switching profiles does not merge progress or coins.',switch:'You are switching to another profile. This player’s progress and coins will not transfer or merge. Continue?',conflict:'That Google account already belongs to another profile. Your player is preserved; no data was merged.',failed:'Could not verify Google sign-in. Your player is preserved; please retry.'},
+  'pt-BR':{link:'Continuar com Google',login:'Entrar em outro perfil Google',manage:'Vincular ou trocar de conta',current:'Continuar com minha conta',saved:'Sua conta mantém seu jogador. Trocar de perfil não mescla progresso ou moedas.',switch:'Você vai entrar em outro perfil. O progresso e as moedas deste jogador não serão transferidos nem mesclados. Continuar?',conflict:'Essa conta Google já pertence a outro perfil. Seu jogador foi mantido; nenhum dado foi mesclado.',failed:'Não foi possível verificar a entrada com Google. Seu jogador foi mantido; tente novamente.'}
+ };
+ const googleWords=()=>googleCopy[globalThis.I18n?.language]||googleCopy.es;
  const entryKey='aventura-account-choice:v1:'+cfg.project;
  function entryChoice(){try{return localStorage.getItem(entryKey);}catch{return null;}}
  function chooseEntry(value){localStorage.setItem(entryKey,value);}
@@ -21,9 +27,25 @@
   const email=document.createElement('input');email.type='email';email.required=true;email.autocomplete='email';email.value=entryEmail;email.id='entryEmail';email.oninput=()=>entryEmail=email.value;label.htmlFor=email.id;
   const create=document.createElement('button');create.type='submit';create.textContent=copy.create;
   const login=document.createElement('button');login.type='button';login.textContent=copy.login;
-  const guest=document.createElement('button');guest.type='button';guest.textContent=copy.guest;
-  const help=document.createElement('p');help.textContent=copy.help;help.style.cssText='font-size:14px;line-height:1.5';
+  const words=googleWords();
+  const guest=document.createElement('button');guest.type='button';guest.textContent=entryUser?.is_anonymous===false?words.current:copy.guest;
+  const google=document.createElement('button');google.type='button';google.textContent=words.link;google.disabled=globalThis.AccountGoogle?.available?.()!==true;google.hidden=google.disabled;
+  const existing=document.createElement('button');existing.type='button';existing.textContent=words.login;existing.disabled=google.disabled;existing.hidden=google.hidden;
+  const googleError=error=>error?.code==='GOOGLE_PROFILE_CONFLICT'?words.conflict:words.failed;
+  const cancelGoogle=document.createElement('button');cancelGoogle.type='button';cancelGoogle.textContent=({'es':'Cancelar ingreso con Google','en':'Cancel Google sign-in','pt-BR':'Cancelar entrada com Google'})[globalThis.I18n?.language]||'Cancelar ingreso con Google';cancelGoogle.hidden=!globalThis.AccountGoogle?.pending?.();
+  cancelGoogle.onclick=()=>{if(entryBusy)return;globalThis.AccountGoogle?.cancel();entryStatus='';welcome();};
+  async function googleAction(switching){
+   if(entryBusy||globalThis.AccountGoogle?.available?.()!==true)return;
+   if(switching&&!confirm(words.switch))return;
+   entryBusy=true;form.querySelectorAll('button,input').forEach(b=>b.disabled=true);
+   try{chooseEntry('google-pending');const result=await (switching?AccountGoogle.login({confirmProfileSwitch:true}):AccountGoogle.link());if(result.status==='already_linked'){chooseEntry('guest');forcedEntry=false;entryStatus='';}}
+   catch(error){entryStatus=googleError(error);}
+   finally{entryBusy=false;recheck();}
+  }
+  google.onclick=()=>void googleAction(false);existing.onclick=()=>void googleAction(true);
+  const help=document.createElement('p');help.textContent=entryUser?.is_anonymous===false?words.saved:copy.help;help.style.cssText='font-size:14px;line-height:1.5';
   const send=async registering=>{
+   if(cfg.emailRegistrationEnabled!==true)return;
    if(entryBusy||!form.reportValidity())return;
    if(!navigator.onLine){entryStatus=copy.offline;welcome();return;}
    entryBusy=true;entryStatus=copy.busy;node.querySelector('p').textContent=entryStatus;
@@ -41,9 +63,10 @@
    finally{entryBusy=false;recheck();}
   };
   form.onsubmit=e=>{e.preventDefault();void send(true);};login.onclick=()=>void send(false);
-  guest.onclick=()=>{try{chooseEntry('guest');entryStatus='';void check();}catch{entryStatus=copy.failed;welcome();}};
-  for(const e of [email,create,login,guest])e.style.cssText='box-sizing:border-box;width:100%;min-width:0;white-space:normal;min-height:46px;padding:12px;border-radius:10px;font:inherit;transform:none';
-  form.append(label,email,create,login,guest,help);node.append(form);guest.focus();
+  guest.onclick=()=>{try{chooseEntry('guest');forcedEntry=false;entryStatus='';void check();}catch{entryStatus=copy.failed;welcome();}};
+  for(const e of [email,create,login,google,existing,cancelGoogle,guest])e.style.cssText='box-sizing:border-box;width:100%;min-width:0;white-space:normal;min-height:46px;padding:12px;border-radius:10px;font:inherit;transform:none';
+  if(cfg.emailRegistrationEnabled===true)form.append(label,email,create,login);
+  form.append(google,existing,cancelGoogle,guest,help);node.append(form);guest.focus();
  }
  const cacheKey=uid=>general?'syncAdmission:v2:'+cfg.project+':'+uid:'pilotAdmission:v1:'+cfg.uuid;
  const cached=uid=>{try{return localStorage.getItem(cacheKey(uid))==='previously_verified';}catch{return false;}};
@@ -88,12 +111,16 @@
   node.querySelector('button').disabled=true;
   try{
    await deadline(globalThis.AventuraOnline.cargarSupabase());if(!current())return;client=globalThis.AventuraSupabase.obtenerCliente();
+   try{await globalThis.AccountGoogle?.finishPending();}catch(error){diagnose('google-return',error);forcedEntry=true;entryStatus=error?.code==='GOOGLE_PROFILE_CONFLICT'?googleWords().conflict:googleWords().failed;}
    if(navigator.onLine&&!subscription&&client.auth.onAuthStateChange)subscription=client.auth.onAuthStateChange(()=>recheck());
    const saved=globalThis.AventuraSupabase.tieneSesionGuardada?.();
    const local=!navigator.onLine&&globalThis.AventuraSupabase.leerSesionLocal?globalThis.AventuraSupabase.leerSesionLocal():await deadline(client.auth.getSession());if(!current())return;
    let session=local.data?.session;
+   entryUser=session?.user||null;
    if(local.error){diagnose('session',local.error);show('No pudimos recuperar tu sesión. Reconectá y reintentá sin borrar datos.');return;}
-   if(cfg.accountChoice&&general&&cfg.allowGuests&&session?.user?.is_anonymous!==false&&entryChoice()!=='guest'){
+   // Existing players are not forced through onboarding after an update.
+   if(!forcedEntry&&session?.user?.id&&!entryChoice())chooseEntry('guest');
+   if(forcedEntry||cfg.accountChoice&&general&&cfg.allowGuests&&session?.user?.is_anonymous!==false&&entryChoice()!=='guest'){
     welcome();return;
    }
    if(!session?.user?.id&&general&&cfg.allowGuests){
@@ -132,7 +159,14 @@
   }catch(error){if(current()){diagnose('recovery',error);show('No pudimos comprobar la sincronización. Reconectá y volvé a intentar; no borres tus datos.');}}
   finally{if(current()&&node)node.querySelector('button').disabled=false;}
  }
- function start(){void check();}
+ function requestEntry(){for(const dialog of document.querySelectorAll('dialog[open]'))dialog.close();forcedEntry=true;entryStatus='';void check();}
+ globalThis.PlayerAccountChoice=Object.freeze({open:requestEntry});
+ function start(){
+  const button=document.createElement('button');button.type='button';button.id='managePlayerAccount';button.textContent=googleWords().manage;button.onclick=requestEntry;
+  globalThis.I18n?.subscribe?.(()=>{button.textContent=googleWords().manage;});
+  (document.querySelector('#modalConfiguracion .panel-configuracion')||document.body).append(button);
+  void check();
+ }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
  for(const event of ['online','offline','focus'])window.addEventListener(event,()=>recheck());
  // Snapshots written by another tab are not an identity change. Rechecking on

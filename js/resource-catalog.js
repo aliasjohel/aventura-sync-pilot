@@ -932,7 +932,9 @@ globalThis.GameResourceCatalog = Object.freeze([
   "./pilot-gate.js",
   "./css/sync-menu-layout.css",
   "./js/multiplayer-community.js",
-  "./css/multiplayer-community.css"
+  "./css/multiplayer-community.css",
+  "./js/google-account.js",
+  "./js/google-account-browser.js"
 ]);
 globalThis.GameResourceSizes = Object.freeze({
   "./assets/images/perfil/marco-tower_conquistador-v1.webp": 57114,

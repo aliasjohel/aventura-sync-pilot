@@ -3258,10 +3258,14 @@ function iniciarPruebaVersusLocal() {
   abrirSeleccionPersonajeVersus();
 }
 
-btnGuardarCuentaVersus.addEventListener("click", () => ejecutarAccionAmigosVersus(
-  () => adaptadorSalasVersus.vincularCorreo(correoCuentaVersus.value),
-  "Te enviamos una confirmación. Abrila desde tu correo para guardar el jugador.",
-));
+btnGuardarCuentaVersus.hidden=globalThis.AVENTURA_PILOT_CONFIG?.emailRegistrationEnabled!==true;
+btnGuardarCuentaVersus.addEventListener("click", () => {
+  if(globalThis.AVENTURA_PILOT_CONFIG?.emailRegistrationEnabled!==true)return;
+  return ejecutarAccionAmigosVersus(
+    () => adaptadorSalasVersus.vincularCorreo(correoCuentaVersus.value),
+    "Te enviamos una confirmación. Abrila desde tu correo para guardar el jugador.",
+  );
+});
 
 btnEntrarCuentaVersus.addEventListener("click", () => ejecutarAccionAmigosVersus(
   () => adaptadorSalasVersus.entrarConCorreo(correoCuentaVersus.value),
